@@ -7,7 +7,8 @@ from PIL import Image
 import csv
 import os
 import numpy as np
-
+import logging
+import sys
 
 
 
@@ -23,9 +24,15 @@ app = Flask(__name__)
 
 
 # Define a route for the home page
-@app.route('/')
+@app.route('/', methods=['GET'])
+
+
 def home():
     return render_template('home.html')
+def upload():
+    file = request.files['file']
+    # Process the uploaded file
+    return 'File uploaded successfully!'
 
 # Define a route for handling predictions
 @app.route('/predict', methods=['POST'])
@@ -42,5 +49,13 @@ def predict():
     # Render the results template
     return render_template('results.html', prediction=prediction)
 
+
+# Define 
+@app.route('/results', methods=['GET'])
+def results():
+    # Render the results template
+    return render_template('results.html')
+
 if __name__ == '__main__':
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     app.run(debug=True)

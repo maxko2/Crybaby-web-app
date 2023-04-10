@@ -4,8 +4,12 @@
     <title>Crybaby App</title>
   </head>
   <body>
-    <h1>Welcome to Crybaby App</h1>
-    <p>This is a simple web application built with Flask.</p>
-    <a href="/predict">Predict</a>
+    <h1>Upload a recording</h1>
+    <form action="/" method="post" enctype="multipart/form-data">
+      <input type="file" name="file">
+      <br><br>
+      <input type="submit" value="Upload">
+    </form>
+    <a href="/results">Predict</a>
   </body>
 </html>
