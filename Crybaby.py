@@ -16,6 +16,11 @@ import uuid
 import tensorflow as tf
 from pymongo import MongoClient
 from flask_pymongo import PyMongo
+import sounddevice as sd
+import scipy.io.wavfile as wav
+from pydub import AudioSegment
+from io import BytesIO
+
 
 # Load the model
 model = load_model("model1.h5")
@@ -119,6 +124,31 @@ def upload():
     file = request.files['file']
     return predict(file)
 
+@app.route('/record', methods=['POST'])
+def record():
+    if request.method == 'POST':
+        # Check if the request contains a file
+        if 'record_file' not in request.files:
+            return 'No file found', 400
+        
+        # Get the file from the request
+        file = request.files['record_file']
+
+        # Check if the file is valid
+        if file and file.filename.endswith('.ogg'):  # Update the file extension based on the actual format
+            # Convert the PCM data to WAV format
+            audio_data = file.read()
+            pcm_audio = AudioSegment.from_file(BytesIO(audio_data), format='ogg;codecs=opus')
+            wav_audio = pcm_audio.export(format='wav')
+
+            # Call your predict() function with the wav_audio data and get the appropriate response based on your application logic
+            result = predict(wav_audio)
+
+            # Return the response
+            return result
+        else:
+            return 'Invalid file format', 400
+
 # Define a route for handling predictions
 @app.route('/predict', methods=['POST'])
 def predict(file=None):
@@ -161,7 +191,7 @@ def predict(file=None):
         segment2 = audio_data[segment_samples:2*segment_samples]
 
          # Compute the spectrograms for each segment
-        img1 = librosa.feature.melspectrogram(y=audio_data, sr=sr)
+        img1 = librosa.feature.melspectrogram(y=segment1, sr=sr)
         img2 = librosa.feature.melspectrogram(y=segment2, sr=sr)
        
         

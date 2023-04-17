@@ -1,16 +1,116 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
+  <title>Crybaby App</title>
+  <link rel="icon" type="image/png" href="static/favicon.ico">
+</head>
+<body>
+  <h1>Upload a recording</h1>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <br><br>
+    <input type="submit" value="Upload">
+  </form>
+  
+  <!-- HTML form for recording audio -->
+  <form action="/record" id="recordForm" method="post" enctype="multipart/form-data">
+    <br><br>
+    <input type="button" value="Record" id="recordButton">
+    <input type="hidden" id="audioData" name="record_file">
+    <input type="button" value="Submit" id="submitButton" style="display: none;">
+  </form>
+  <audio controls id="audioPlayer"></audio>
 
-    <title>Crybaby App</title>
-    <link rel="icon" type="image/png" href="static/favicon.ico">
-  </head>
-  <body>
-    <h1>Upload a recording</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="file">
-      <br><br>
-      <input type="submit" value="Upload">
-    </form>
-  </body>
+  <script>
+    // Function to start recording audio
+    function startRecording() {
+      let recordButton = document.getElementById('recordButton');
+      let submitButton = document.getElementById('submitButton');
+      let audioDataInput = document.getElementById('audioData');
+      let recordForm = document.getElementById('recordForm');
+      let audioPlayer = document.getElementById('audioPlayer');
+      
+      if (recordButton && submitButton && audioDataInput && recordForm && audioPlayer) {
+        // Declare global variables for MediaRecorder instance and recorded data chunks
+        let mediaRecorder;
+        let chunks = [];
+  
+        // Reset recorded data chunks
+        chunks = [];
+  
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(function(stream) {
+            // Create a MediaRecorder instance
+            mediaRecorder = new MediaRecorder(stream);
+  
+            // Start recording when the record button is clicked
+            recordButton.addEventListener('click', function() {
+              mediaRecorder.start();
+              console.log('Recording started');
+              // Automatically stop recording after 7 seconds
+              setTimeout(function() {
+                mediaRecorder.stop();
+              }, 7000);
+            });
+  
+            // Stop recording and update the form data when the submit button is clicked
+            submitButton.addEventListener('click', function() {
+              console.log('Recording stopped');
+              audioDataInput.value = JSON.stringify(chunks);
+              
+              // Convert chunks to Blob
+              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+              
+              // Create FormData object to send file data as multipart/form-data
+              let formData = new FormData();
+              formData.append('record_file', blob, 'recorded_audio.wav');
+
+              // Send POST request to Flask endpoint with file data as payload
+              fetch('/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
+                method: 'POST',
+                body: formData
+              })
+              .then(response => {
+                // Handle response from server
+                if (response.ok) {
+                  // Handle successful response
+                  // You can add your own logic here based on the response from the server
+                } else {
+                  // Handle unsuccessful response
+                  // You can add your own error handling logic here
+                }
+              })
+              .catch(error => {
+                console.error('Error sending request:', error);
+              });
+
+              // Submit the form
+              recordForm.submit();
+            });
+  
+            // Save recorded chunks of data
+            mediaRecorder.addEventListener('dataavailable', function(event) {
+              chunks.push(event.data);
+            });
+  
+            // Play recorded audio
+            mediaRecorder.addEventListener('stop', function() {
+              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+              audioPlayer.src = URL.createObjectURL(blob);
+              audioPlayer.controls = true;
+              // Show the submit button after recording is finished
+              submitButton.style.display = 'inline';
+            });
+          })
+          .catch(function(error) {
+            console.error('Error accessing microphone:', error);
+          });
+      }
+    }
+  
+    // Call the startRecording function when the page loads
+    window.onload = startRecording;
+  </script>
+  
+</body>
 </html>
