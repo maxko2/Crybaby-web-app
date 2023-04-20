@@ -53,11 +53,6 @@ class User:
         self.email = email
 
 
-
-
-
-
-
 app = Flask(__name__)
 app.secret_key = 'mysecretkey'
 
@@ -127,13 +122,12 @@ def upload():
 @app.route('/record', methods=['POST'])
 def record():
     if request.method == 'POST':
-        # Check if the request contains a file
-        if 'record_file' not in request.files:
-            return 'No file found', 400
+        
+
         
         # Get the file from the request
         file = request.files['record_file']
-
+        print(file.content_type)
         # Check if the file is valid
         if file and file.filename.endswith('.ogg'):  # Update the file extension based on the actual format
             # Convert the PCM data to WAV format
@@ -258,7 +252,6 @@ def predict(file=None):
                 labels_array.append(label)
     print(labels_array, file=sys.stderr)
     
-
 
     return display_results(labels_array)
 # Define a route for displaying the results

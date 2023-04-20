@@ -66,7 +66,7 @@
               formData.append('record_file', blob, 'recorded_audio.wav');
 
               // Send POST request to Flask endpoint with file data as payload
-              fetch('/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
+              fetch('http://127.0.0.1:5000/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
                 method: 'POST',
                 body: formData
               })
