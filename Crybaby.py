@@ -130,6 +130,9 @@ def login():
             
             session['logged_in'] = True
             session['username'] = username
+            session['password'] = password
+            session['email']=  users_collection.find_one({'username': username}).get('email')
+
             # If username and password are correct, redirect to a success page
             return redirect(url_for('home'))
         else:
@@ -162,7 +165,7 @@ def home():
         return redirect(url_for('login'))
     else:
         # If the user is logged in, render the home page
-        return render_template('home.html')
+        return render_template('home.html',username=session['username'])
     
 
 # Define a route for the register page
@@ -352,13 +355,17 @@ def predict(file=None):
     return display_results(labels_array)
 
 
-
-
-
 @app.route('/history')
 def history():
     return render_template('history.html', history=history)
 
+
+@app.route('/user', methods=['GET', 'POST'])
+def user():
+    if request.method == 'GET':
+        return render_template('user.html', email=session['email'], username=session['username'], password=session['password'])
+    else:
+        return redirect(url_for('home'))
 
 
 # Define a route for displaying the results
@@ -369,6 +376,9 @@ def display_results(labels_array):
         # If not, redirect to the login page
         return redirect(url_for('login'))
     return render_template('results.html', prediction=labels_array)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
