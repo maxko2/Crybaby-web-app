@@ -366,6 +366,13 @@ def user():
         return render_template('user.html', email=session['email'], username=session['username'], password=session['password'])
     else:
         return redirect(url_for('home'))
+    
+@app.route('/newborns', methods=['GET', 'POST'])
+def newborns():
+    if request.method == 'GET':
+        return render_template('newborns.html')
+    else:
+        return redirect(url_for('newborns.html'))
 
 
 # Define a route for displaying the results
