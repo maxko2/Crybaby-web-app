@@ -2,21 +2,59 @@
 <html>
 <head>
   <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
-  <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
-  <title>Crybaby App</title>
   <link rel="icon" type="image/png" href="static/favicon.ico">
+  <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
+  <title>Upload a recording</title>
   <style>
     #upload-button {
       display: none;
     }
+    input[type="file"]:valid ~ #upload-button {
+      display: inline;
+    }
   </style>
 </head>
 <body>
-  <h1>Upload a recording</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" data-role="file" data-mode="drop" onchange="showUploadButton()">
-    <button type="submit" id="upload-button" class="button primary square outline">Upload</button>
-  </form>
+  
+
+  <aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
+    <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+      <div class="avatar"></div>
+      <span class="title fg-black">Crybaby</span>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
+      <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
+      <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
+      <li><a href="/newborns"><span class="mif-organization icon"></span>Newborns</a></li>
+      <li><a href="/username"><span class="mif-user icon"></span>User</a></li>
+      <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
+    </ul>
+  </aside>
+  <div class="shifted-content h-100 p-ab">
+    <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
+        <button class="app-bar-item c-pointer" id="sidebar-toggle-3">
+            <span class="mif-menu fg-white"></span>
+        </button>
+    </div>
+  
+    <div class="h-100 p-4">
+      <div id="upload-form">
+        <p>
+        <div class="remark alert">
+          <h3>Upload a recording</h3>
+        </div>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" data-role="file" data-mode="drop" onchange="showUploadButton()">
+        <button type="submit" id="upload-button" class="button primary square outline">Upload</button>
+      </form>
+      </p>
+      </div>
+    </div>
+
+
+
+  
 
   <script>
     function showUploadButton() {
@@ -24,5 +62,6 @@
       uploadButton.style.display = "inline";
     }
   </script>
+
 </body>
 </html>

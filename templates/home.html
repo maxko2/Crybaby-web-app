@@ -4,98 +4,86 @@
     <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
     <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
     
-    <title>Home Page</title>
-    
-
- 
-
+    <title>Home</title>
+<style>
+    .carousel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}</style>
   </head>
   <body>
     <aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
-      
-      <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
-          <div class="avatar">
-          </div>
+        <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+          <div class="avatar"></div>
           <span class="title fg-black">Crybaby</span>
-      </div>
-      <ul class="sidebar-menu">
+        </div>
         <ul class="sidebar-menu">
           <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
           <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
           <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
+          <li><a href="/newborns"><span class="mif-organization icon"></span>Newborns</a></li>
           <li><a href="/username"><span class="mif-user icon"></span>User</a></li>
           <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
         </ul>
-        
-      </ul>
-      
-      </ul>
-  </aside>
-
-  <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
-  <div class="h-100 w-100 p-ab shifted-content fg-red">
-      <button class="bg-red pos-absolute pos-top-left  "id="sidebar-toggle-3">
-          <span class="mif-menu mif-5x"></span>
-      </button>
-  </div>
+      </aside>
+      <div class="shifted-content h-100 p-ab">
+        <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
+            <button class="app-bar-item c-pointer" id="sidebar-toggle-3">
+                <span class="mif-menu fg-white"></span>
+            </button>
+        </div>
 
   
   
-
-
-
-
-  <div data-role="carousel"
-  data-cls-bullet="bullet-big"
-  data-auto-start="true"
-  data-cls-controls="fg-white"
-  data-bullets-position="right"
-  data-control-next="<span class='mif-chevron-right fg-red'></span>"
-  data-control-prev="<span class='mif-chevron-left fg-red'></span>"
-  data-pos="bottom-right"
->
- <div class="slide p-2 pl-10 pr-10">
-     <div class="row flex-align-center h-100">
-         <div class="cell-md-4 text-center">
-             <img src="static\crybaby.png" class="img-fluid">
-         </div>
-         <div class="cell-md-8">
-             <p class="mt-4 mb-4">The revolutionary newborns cry classifier</p>
-             <button class="button" id="collapse_toggle_1">About us</button>
-<div class="pos-relative">
-    <div class="bg-red fg-white"
-            data-role="collapse"
-            data-collapsed="true"
-            data-toggle-element="#collapse_toggle_1">
-            
-        <p class="p-10 text-center">
-            In Metro UI you can transform any element to collapsible.
-        </p>
-    </div>
-</div>
-         </div>
-     </div>
- </div>
-
-
-
- <div class="slide p-2 pl-10 pr-10" data-cover="images/bg-4.jpg">
-     <div class="row flex-align-center h-100">
-         <div class="cell-md-4 text-center">
-             <div class="img-container drop-shadow">
-                 <img src="static\crybaby.png">
-             </div>
-         </div>
-     </div>
- </div>
-</div>
-
-
-
-
-
-
-  
-  
+        <div class="h-100 p-4">
+            <p>
+                <div data-role="carousel"
+                data-height="21/9"
+                data-cls-bullet="bullet-big"
+                data-auto-start="true"
+                data-cls-controls="fg-white"
+                data-bullets-position="right"
+                data-control-next="<span class='mif-chevron-right fg-red'></span>"
+                data-control-prev="<span class='mif-chevron-left fg-red'></span>"
+                data-pos="bottom-right"
+                
+              >
+               <div class="slide p-2 pl-10 pr-10">
+                   <div class="row flex-align-center h-50">
+                       <div class="cell-md-4 text-center">
+                           <img src="static\crybaby.png" class="img-fluid">
+                       </div>
+                       <div class="cell-md-8 text-center text-bold">
+                           <p class="mt-4 mb-4 text-center text-bold">The revolutionary newborns cry classifier</p>
+                           <button class="button" id="collapse_toggle_1">About us</button>
+              <div class="pos-relative">
+                  <div class="bg-red fg-white"
+                          data-role="collapse"
+                          data-collapsed="true"
+                          data-toggle-element="#collapse_toggle_1">
+                          
+                      <p class="p-10 text-center">
+                          The app was created by Daniel Uralsky & Maxim Kobzer
+                      </p>
+                  </div>
+              </div>
+                       </div>
+                   </div>
+               </div>
+               <div class="slide p-2 pl-10 pr-10">
+                   <div class="row flex-align-center h-50 flex-justify-center">
+                       <div class="cell-md-4 text-center">
+                           <div class="img-container drop-shadow">
+                               <img src="static\crybaby.png">
+                           </div>
+                       </div>
+                   </div>
+               </div>
+              </div>             
+            </p>
+        </div>
+        </div>
   </body>
 </html>

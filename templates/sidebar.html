@@ -1,41 +1,28 @@
-<aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-2">
-    <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
-      <div class="avatar"></div>
-      <span class="title fg-black">Crybaby</span>
-      <span class="mif-record_voice_over icon"></span>
-    </div>
-    <ul class="sidebar-menu">
-      <li><a data-menu="upload"><span class="mif-file-upload icon"></span>Upload</a></li>
-      <li><a data-menu="record"><span class="mif-record_voice_over icon"></span>Record</a></li>
-      <li><a data-menu="history"><span class="mif-history icon"></span>History</a></li>
-      <li><a data-menu="username"><span class="mif-user icon"></span>User</a></li>
-      <li><a data-menu="logout"><span class="mif-exit icon"></span>Logout</a></li>
-    </ul>
-  </aside>
-  <div class="h-100 w-100 p-ab">
-    <button class="button square pos-absolute pos-top-left" id="sidebar-toggle-2">
-      <span class="mif-menu mif-5x fg-blue"></span>
-    </button>
+
+<aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
+  <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+    <div class="avatar"></div>
+    <span class="title fg-black">Crybaby</span>
   </div>
-  
-  <script>
-    const menuItems = document.querySelectorAll('.sidebar-menu');
-    const baseUrl = 'http://localhost:5000/home?menu=';
-  
-    menuItems.forEach(item => {
-      item.addEventListener('click', (event) => {
-        event.preventDefault();
-        const menuItem = event.target.getAttribute('data-menu');
-        const url = `${baseUrl}${menuItem}`;
-        fetch(url)
-          .then(response => response.text())
-          .then(html => {
-            document.documentElement.innerHTML = html;
-          })
-          .catch(error => {
-            console.error(`Error fetching ${url}: ${error}`);
-          });
-      });
-    });
-  </script>
-  
+  <ul class="sidebar-menu">
+    <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
+    <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
+    <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
+    <li><a href="/newborns"><span class="mif-organization icon"></span>Newborns</a></li>
+    <li><a href="/username"><span class="mif-user icon"></span>User</a></li>
+    <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
+  </ul>
+</aside>
+<div class="shifted-content h-100 p-ab">
+  <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
+      <button class="app-bar-item c-pointer" id="sidebar-toggle-3">
+          <span class="mif-menu fg-white"></span>
+      </button>
+  </div>
+
+  <div class="h-100 p-4">
+    <p>
+      
+    </p>
+</div>
+</div>
