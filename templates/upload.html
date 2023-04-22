@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+  <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
+  <title>Crybaby App</title>
+  <link rel="icon" type="image/png" href="static/favicon.ico">
+  <style>
+    #upload-button {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upload a recording</h1>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" data-role="file" data-mode="drop" onchange="showUploadButton()">
+    <button type="submit" id="upload-button" class="button primary square outline">Upload</button>
+  </form>
+
+  <script>
+    function showUploadButton() {
+      var uploadButton = document.getElementById("upload-button");
+      uploadButton.style.display = "inline";
+    }
+  </script>
+</body>
+</html>

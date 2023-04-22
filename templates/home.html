@@ -1,116 +1,101 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Crybaby App</title>
-  <link rel="icon" type="image/png" href="static/favicon.ico">
-</head>
-<body>
-  <h1>Upload a recording</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <br><br>
-    <input type="submit" value="Upload">
-  </form>
-  
-  <!-- HTML form for recording audio -->
-  <form action="/record" id="recordForm" method="post" enctype="multipart/form-data">
-    <br><br>
-    <input type="button" value="Record" id="recordButton">
-    <input type="hidden" id="audioData" name="record_file">
-    <input type="button" value="Submit" id="submitButton" style="display: none;">
-  </form>
-  <audio controls id="audioPlayer"></audio>
+  <head>
+    <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+    <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
+    
+    <title>Home Page</title>
+    
 
-  <script>
-    // Function to start recording audio
-    function startRecording() {
-      let recordButton = document.getElementById('recordButton');
-      let submitButton = document.getElementById('submitButton');
-      let audioDataInput = document.getElementById('audioData');
-      let recordForm = document.getElementById('recordForm');
-      let audioPlayer = document.getElementById('audioPlayer');
+ 
+
+  </head>
+  <body>
+    <aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
       
-      if (recordButton && submitButton && audioDataInput && recordForm && audioPlayer) {
-        // Declare global variables for MediaRecorder instance and recorded data chunks
-        let mediaRecorder;
-        let chunks = [];
-  
-        // Reset recorded data chunks
-        chunks = [];
-  
-        navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(function(stream) {
-            // Create a MediaRecorder instance
-            mediaRecorder = new MediaRecorder(stream);
-  
-            // Start recording when the record button is clicked
-            recordButton.addEventListener('click', function() {
-              mediaRecorder.start();
-              console.log('Recording started');
-              // Automatically stop recording after 7 seconds
-              setTimeout(function() {
-                mediaRecorder.stop();
-              }, 7000);
-            });
-  
-            // Stop recording and update the form data when the submit button is clicked
-            submitButton.addEventListener('click', function() {
-              console.log('Recording stopped');
-              audioDataInput.value = JSON.stringify(chunks);
-              
-              // Convert chunks to Blob
-              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
-              
-              // Create FormData object to send file data as multipart/form-data
-              let formData = new FormData();
-              formData.append('record_file', blob, 'recorded_audio.wav');
+      <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+          <div class="avatar">
+          </div>
+          <span class="title fg-black">Crybaby</span>
+      </div>
+      <ul class="sidebar-menu">
+        <ul class="sidebar-menu">
+          <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
+          <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
+          <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
+          <li><a href="/username"><span class="mif-user icon"></span>User</a></li>
+          <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
+        </ul>
+        
+      </ul>
+      
+      </ul>
+  </aside>
 
-              // Send POST request to Flask endpoint with file data as payload
-              fetch('http://127.0.0.1:5000/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
-                method: 'POST',
-                body: formData
-              })
-              .then(response => {
-                // Handle response from server
-                if (response.ok) {
-                  // Handle successful response
-                  // You can add your own logic here based on the response from the server
-                } else {
-                  // Handle unsuccessful response
-                  // You can add your own error handling logic here
-                }
-              })
-              .catch(error => {
-                console.error('Error sending request:', error);
-              });
+  <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
+  <div class="h-100 w-100 p-ab shifted-content fg-red">
+      <button class="bg-red pos-absolute pos-top-left  "id="sidebar-toggle-3">
+          <span class="mif-menu mif-5x"></span>
+      </button>
+  </div>
 
-              // Submit the form
-              recordForm.submit();
-            });
   
-            // Save recorded chunks of data
-            mediaRecorder.addEventListener('dataavailable', function(event) {
-              chunks.push(event.data);
-            });
   
-            // Play recorded audio
-            mediaRecorder.addEventListener('stop', function() {
-              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
-              audioPlayer.src = URL.createObjectURL(blob);
-              audioPlayer.controls = true;
-              // Show the submit button after recording is finished
-              submitButton.style.display = 'inline';
-            });
-          })
-          .catch(function(error) {
-            console.error('Error accessing microphone:', error);
-          });
-      }
-    }
+
+
+
+
+  <div data-role="carousel"
+  data-cls-bullet="bullet-big"
+  data-auto-start="true"
+  data-cls-controls="fg-white"
+  data-bullets-position="right"
+  data-control-next="<span class='mif-chevron-right fg-red'></span>"
+  data-control-prev="<span class='mif-chevron-left fg-red'></span>"
+  data-pos="bottom-right"
+>
+ <div class="slide p-2 pl-10 pr-10">
+     <div class="row flex-align-center h-100">
+         <div class="cell-md-4 text-center">
+             <img src="static\crybaby.png" class="img-fluid">
+         </div>
+         <div class="cell-md-8">
+             <p class="mt-4 mb-4">The revolutionary newborns cry classifier</p>
+             <button class="button" id="collapse_toggle_1">About us</button>
+<div class="pos-relative">
+    <div class="bg-red fg-white"
+            data-role="collapse"
+            data-collapsed="true"
+            data-toggle-element="#collapse_toggle_1">
+            
+        <p class="p-10 text-center">
+            In Metro UI you can transform any element to collapsible.
+        </p>
+    </div>
+</div>
+         </div>
+     </div>
+ </div>
+
+
+
+ <div class="slide p-2 pl-10 pr-10" data-cover="images/bg-4.jpg">
+     <div class="row flex-align-center h-100">
+         <div class="cell-md-4 text-center">
+             <div class="img-container drop-shadow">
+                 <img src="static\crybaby.png">
+             </div>
+         </div>
+     </div>
+ </div>
+</div>
+
+
+
+
+
+
   
-    // Call the startRecording function when the page loads
-    window.onload = startRecording;
-  </script>
   
-</body>
+  </body>
 </html>

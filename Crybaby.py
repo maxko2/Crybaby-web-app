@@ -1,26 +1,26 @@
-from flask import Flask, request, render_template,url_for,flash,redirect
-from tensorflow import keras
-from keras.layers import Dense
-from keras.models import Sequential, load_model
-import numpy as np
-from PIL import Image
+import json
 import logging
+import os
 import sys
 import time
+import uuid
+from io import BytesIO
+import cv2
 import librosa
 import matplotlib.pyplot as plt
-import json
-import cv2
-import os
-import uuid
-import tensorflow as tf
-from pymongo import MongoClient
-from flask_pymongo import PyMongo
-import sounddevice as sd
+import numpy as np
 import scipy.io.wavfile as wav
+import sounddevice as sd
+import tensorflow as tf
+from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask_cors import CORS
+from flask_pymongo import PyMongo
+from keras.layers import Dense
+from keras.models import Sequential, load_model
+from PIL import Image
 from pydub import AudioSegment
-from io import BytesIO
-
+from pymongo import MongoClient
+from tensorflow import keras
 
 # Load the model
 model = load_model("model1.h5")
@@ -45,15 +45,69 @@ else:
 # # Delete all documents in the 'users' collection
 # result = users_collection.delete_many({})  # Empty filter to match all documents
 
+
+
+################## DB ##################
+########################################
+
+
+# Define Recording schema
+class Recording:
+    def __init__(self, date, duration, filepath):
+        self.date = date
+        self.duration = duration
+        self.filepath = filepath
+
+# Define Newborn schema
+class Newborn:
+    def __init__(self, name, birthdate):
+        self.name = name
+        self.birthdate = birthdate
+        self.recordings = []
+
+    def add_recording(self, date, duration, filepath):
+        recording = Recording(date, duration, filepath)
+        self.recordings.append(recording)
+
 # Define User schema
 class User:
     def __init__(self, username, password, email):
         self.username = username
         self.password = password
         self.email = email
+        self.newborns = []
+
+    def add_newborn(self, name, birthdate):
+        newborn = Newborn(name, birthdate)
+        self.newborns.append(newborn)
+        
+    def get_newborn_by_name(self, name):
+        for newborn in self.newborns:
+            if newborn.name == name:
+                return newborn
+        return None
+    
+    
+    
+    # EXAMPLES #
+    
+# user = User("username", "password", "email")
+# user.add_newborn("Baby", "2022-01-01")
+
+#newborn = user.get_newborn_by_name("Baby")
+
+#newborn.add_recording("2022-01-01", 60, "/path/to/recording.wav")
 
 
-app = Flask(__name__)
+################## DB ##################
+########################################
+
+
+app = Flask(__name__, static_url_path='/static')
+
+CORS(app)
+CORS(app, origins=['http://127.0.0.1:5000'])
+
 app.secret_key = 'mysecretkey'
 
 # Configuration for MongoDB
@@ -73,20 +127,48 @@ def login():
         users = mongo.db.users
         user = users.find_one({'username': username, 'password': password})
         if user:
+            
+            session['logged_in'] = True
+            session['username'] = username
             # If username and password are correct, redirect to a success page
-            return render_template('home.html')
+            return redirect(url_for('home'))
         else:
             # If username and password are incorrect, show an error message
             error = 'Invalid username or password. Please try again.'
-            return render_template('login.html')
+            return redirect(url_for('login'))
     else:
         # If it's a GET request, render the login page
         return render_template('login.html')
 
 
+@app.route('/logout')
+def logout():
+    # Clear the session data
+    session.pop('logged_in', None)
+    session.clear()
+
+    # Redirect to the login page
+    return redirect(url_for('login'))
+
+
+
+
+@app.route('/home', methods=['GET','POST'])
+def home():
+    print(session)
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in']:
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
+    else:
+        # If the user is logged in, render the home page
+        return render_template('home.html')
+    
+
 # Define a route for the register page
 @app.route('/register', methods=['GET','POST'])
 def register():
+    
     if request.method == 'POST':
         # Get the entered username and password from the form
         username = request.form['username']
@@ -114,17 +196,26 @@ def register():
     # Render the register page
     return render_template('register.html')
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['POST','GET'])
 def upload():
-    file = request.files['file']
-    return predict(file)
+    
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in']:
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
+    if request.method == 'GET':
+        return render_template("upload.html")
+    else:
+        file = request.files['file']
+        return predict(file)
 
-@app.route('/record', methods=['POST'])
+@app.route('/record', methods=['POST','GET'])
 def record():
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in']:
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
     if request.method == 'POST':
-        
-
-        
         # Get the file from the request
         file = request.files['record_file']
         print(file.content_type)
@@ -142,10 +233,16 @@ def record():
             return result
         else:
             return 'Invalid file format', 400
+    else:
+        return render_template("record.html")
 
 # Define a route for handling predictions
 @app.route('/predict', methods=['POST'])
 def predict(file=None):
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in']:
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
     # Add cache control headers to prevent caching
     response = app.make_response(render_template('results.html')) 
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
@@ -252,11 +349,25 @@ def predict(file=None):
                 labels_array.append(label)
     print(labels_array, file=sys.stderr)
     
-
     return display_results(labels_array)
+
+
+
+
+
+@app.route('/history')
+def history():
+    return render_template('history.html', history=history)
+
+
+
 # Define a route for displaying the results
 @app.route('/results', methods=['GET'])
 def display_results(labels_array):
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in']:
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
     return render_template('results.html', prediction=labels_array)
 
 if __name__ == '__main__':
