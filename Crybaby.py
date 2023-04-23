@@ -386,6 +386,5 @@ def display_results(labels_array):
 
 
 
-
 if __name__ == '__main__':
     app.run(debug=True)

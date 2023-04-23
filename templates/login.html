@@ -5,34 +5,37 @@
     <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
     <link rel="icon" type="image/png" href="static/favicon.ico">
     <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
-    
-    <title>Login</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body background="static/background.png">
-    
-    
-    <div class="remark alert" color="alert" >
-    <h3>Login</h3>
-</div>
-    <form method="post" action="/">
-        <div class="form-group"></div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <input type="submit" value="Login">
-    </form>
-    <form method="get" action="/register">
-        <input type="submit" value="Register">
-    </form>
+    <div id="card">
+        <div id="card-content">
+          <div id="card-title">
+            <h2>LOGIN</h2>
+            <div class="underline-title"></div>
+          </div>
+          <form method="post" class="form" action="/">
+            <label for="username" style="padding-top:13px">
+                &nbsp;Username
+              </label>
+            <input id="username" class="form-content" type="text" name="username" autocomplete="on" required />
+            <div class="form-border"></div>
+            <label for="password" style="padding-top:22px">&nbsp;Password     
+            </label>
+            <input id="password" class="form-content" type="password" name="password" required />
+            <div class="form-border"></div>
+            <a href="#">
+              <legend id="forgot-pass">Forgot password?</legend>
+            </a>
+            <input id="submit-btn" type="submit" name="submit" value="LOGIN" />
+            <form method="get" >
+                <a href="/register" id="signup" type="submit" value="Register">Don't have account yet?</a>
+            </form>
+          </form>
+        </div>
+      </div>
 </body>
 </html>
-
-
-
-
-
