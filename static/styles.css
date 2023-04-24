@@ -70,6 +70,15 @@ label {
   margin: 6rem auto 8.1rem auto;
   width: 329px;
 }
+#card2{
+  background: #fbfbfb;
+  border-radius: 8px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.65);
+  height: 510px;
+  margin: 6rem auto 8.1rem auto;
+  width: 329px;
+  position: relative;
+}
 #card-content {
   padding: 12px 44px;
 }
@@ -125,4 +134,79 @@ label {
   height: 2px;
   margin: -1.1rem auto 0 auto;
   width: 89px;
+}
+
+.flash-message {
+  position: absolute;
+  top: 10px;
+  right: 10px; /* position the message in the top right corner of the card */
+  background-color: transparent; /* set the background color of the message to transparent */
+  color: red; /* set the text color to red */
+  font-weight: bold; /* make the text bold */
+  padding: 10px;
+  border-radius: 5px;
+  display: flex; /* set the display of the message container to flex */
+  align-items: center; /* center the icon and message vertically */
+}
+
+
+
+.flash-message img {
+  width: 20px; /* set the width of the icon */
+  height: 20px; /* set the height of the icon */
+  margin-right: 10px; /* add some space between the icon and the message */
+}
+
+/* Color settings for notification divs */
+.notificationNote, .notificationTip, .notificationCase, .notificationWarning {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  margin-right: 10px;
+  vertical-align: top;
+  display: flex;
+  flex-direction: column;
+}
+
+.notificationNote {
+  background-color: #d5eef8;
+  color: #2183a5;
+}
+.notificationNote .icon:before {
+  content: "\f05a";
+  color: #2183a5;
+}
+
+.notificationTip {
+  background-color: #ddefd7;
+  color: #308935;
+}
+.notificationTip .icon:before {
+  content: "\f058";
+  color: #308935;
+}
+
+.notificationCase {
+  background-color: #dddddd;
+  color: #2b3139;
+}
+.notificationCase .icon:before {
+  content: "\f0c8";
+  color: #2b3139;
+}
+
+.notificationWarning {
+  background-color: #f2dedb;
+  color: #992222;
+}
+.notificationWarning .icon:before {
+  content: "\f071";
+  color: #992222;
+}
+
+.notificationNote .icon, .notificationTip .icon, .notificationCase .icon, .notificationWarning .icon {
+  margin-right: 5px;
+  vertical-align: middle;
 }

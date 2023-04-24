@@ -118,6 +118,7 @@ mongo = PyMongo(app)
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        print("hi")
         # Get the entered username and password from the form
         username = request.form['username']
         password = request.form['password']

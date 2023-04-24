@@ -3,32 +3,40 @@
 <head>
     <link rel="stylesheet" href="http://127.0.0.1:5000/static/styles.css">
     <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/png" href="static/favicon.ico">
     <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
     <title>Register</title>
 </head>
-<body class="background">
-    <h1>Register</h1>
+<body background="static/background.png">
+    <div id="card2">
+        <div id="card-content">
+          <div id="card-title">
+            <h2>Register</h2>
+            <div class="underline-title"></div>
+          </div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+        <div class="notificationWarning">
+            <i class="fas fa-exclamation-circle icon"></i>
+            <p>Account already registered!</p>
+        </div>
         {% endif %}
     {% endwith %}
-    <form method="post" action="/register">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <input type="submit" value="Register">
-    </form>
+    <form method="post" class="form" action="/register">
+        <label for="username" style="padding-top:13px">&nbsp;Username</label>
+        <input id="username" class="form-content" type="text" name="username" autocomplete="on" required />
+        <div class="form-border"></div>
+        <label for="password" style="padding-top:22px">&nbsp;Password</label>
+        <input id="password" class="form-content" type="password" name="password" required />
+        <div class="form-border"></div>
+        <label for="email" style="padding-top:22px">&nbsp;Email</label>
+        <input id="email" class="form-content" type="email" name="email" required />
+        <div class="form-border"></div>
+        <input id="submit-btn" type="submit" name="submit" value="Register" />
+      </form>
+    </div>
+  </div>
 </body>
 </html>
+
