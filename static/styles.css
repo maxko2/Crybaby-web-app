@@ -74,6 +74,29 @@ label {
   position: relative;
   opacity: 1;
 }
+
+#tcard{
+  background: #fbfbfb;
+  border-radius: 8px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.65);
+  height: 300px;
+  margin: 6rem auto 8.1rem auto;
+  width: 700px;
+  position: relative;
+  opacity: 1;
+}
+
+#pcard{
+  background: #fbfbfb;
+  border-radius: 8px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.65);
+  height: 550px;
+  margin: 6rem auto 8.1rem auto;
+  width: 1400px;
+  position: relative;
+  opacity: 1;
+}
+
 #card-content {
   padding: 12px 44px;
 }
@@ -204,3 +227,4 @@ input[type="file"]:valid ~ #upload-button {
   margin-right: 5px;
   vertical-align: middle;
 }
+
