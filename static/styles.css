@@ -136,26 +136,6 @@ label {
   width: 89px;
 }
 
-.flash-message {
-  position: absolute;
-  top: 10px;
-  right: 10px; /* position the message in the top right corner of the card */
-  background-color: transparent; /* set the background color of the message to transparent */
-  color: red; /* set the text color to red */
-  font-weight: bold; /* make the text bold */
-  padding: 10px;
-  border-radius: 5px;
-  display: flex; /* set the display of the message container to flex */
-  align-items: center; /* center the icon and message vertically */
-}
-
-
-
-.flash-message img {
-  width: 20px; /* set the width of the icon */
-  height: 20px; /* set the height of the icon */
-  margin-right: 10px; /* add some space between the icon and the message */
-}
 
 /* Color settings for notification divs */
 .notificationNote, .notificationTip, .notificationCase, .notificationWarning {
