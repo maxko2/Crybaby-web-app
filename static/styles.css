@@ -1,19 +1,4 @@
 
-
-  .text-box {
-    background-color: rgb(126, 1, 1);
-    padding: 10px;
-    display: inline-block;
-    color: rgb(0, 0, 0);
-    font-size: 24px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-  
-  .img-05 {
-    opacity: 0.5;
-  }
-
 .background {
   height: 100%;
   margin: 0;
@@ -25,6 +10,7 @@
 
 .sidebar {
   height: 100%;
+  opacity: 1;
 }
 
 .shifted-content {
@@ -33,23 +19,30 @@
   left: 0;
   height: 100%;
   width: 100%;
+  opacity: 1;
 }
 
 .app-bar {
   width: 100%;
+  opacity: 1;
+  background-color: #c22a2a;
 }
 
 [data-role="carousel"] {
   height: 70vh; /* adjust the height to your liking */
+  opacity: 1;
 }
 
 .slide {
   height: 70vh; /* adjust the height to match the carousel height */
+  opacity: 1;
 }
 
 a {
   text-decoration: none;
 }
+
+
 
 label {
   font-family: "Raleway", sans-serif;
@@ -69,6 +62,7 @@ label {
   height: 410px;
   margin: 6rem auto 8.1rem auto;
   width: 329px;
+  opacity: 1;
 }
 #card2{
   background: #fbfbfb;
@@ -78,6 +72,7 @@ label {
   margin: 6rem auto 8.1rem auto;
   width: 329px;
   position: relative;
+  opacity: 1;
 }
 #card-content {
   padding: 12px 44px;
@@ -134,6 +129,25 @@ label {
   height: 2px;
   margin: -1.1rem auto 0 auto;
   width: 89px;
+}
+
+#upload-button {
+  display: none;
+  background: -webkit-linear-gradient(right, #d16f8c, #c22a2a);
+  border: none;
+  border-radius: 21px;
+  box-shadow: 0px 1px 8px #c22a2a;
+  cursor: pointer;
+  color: white;
+  font-family: "Raleway SemiBold", sans-serif;
+  height: 42.3px;
+  margin: 0 auto;
+  margin-top: 50px;
+  transition: 0.25s;
+  width: 153px;
+}
+input[type="file"]:valid ~ #upload-button {
+  display: inline;
 }
 
 

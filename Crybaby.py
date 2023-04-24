@@ -21,227 +21,11 @@ from PIL import Image
 from pydub import AudioSegment
 from pymongo import MongoClient
 from tensorflow import keras
-
-# Load the model
-model = load_model("model1.h5")
-model.summary()
-
-# Used labels for the model
-label_to_idx = {'Discomfort': 0, 'Hunger': 1, 'Tiredness': 2}
-
-# Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')  # Update connection string as per your MongoDB setup
-db = client['Crybaby']  # Replace 'my_database' with the name of your database
-
-# Check if 'users' collection exists in the database
-if 'users' not in db.list_collection_names():
-    # Create 'users' collection
-    users_collection = db['users']
-    print("Collection 'users' created successfully.")
-else:
-    users_collection = db['users']
-    print("Collection 'users' already exists.")
-
-# # Delete all documents in the 'users' collection
-# result = users_collection.delete_many({})  # Empty filter to match all documents
+from flask_mail import Mail, Message
+import secrets
 
 
 
-################## DB ##################
-########################################
-
-
-# Define Recording schema
-class Recording:
-    def __init__(self, date, duration, filepath):
-        self.date = date
-        self.duration = duration
-        self.filepath = filepath
-
-# Define Newborn schema
-class Newborn:
-    def __init__(self, name, birthdate):
-        self.name = name
-        self.birthdate = birthdate
-        self.recordings = []
-
-    def add_recording(self, date, duration, filepath):
-        recording = Recording(date, duration, filepath)
-        self.recordings.append(recording)
-
-# Define User schema
-class User:
-    def __init__(self, username, password, email):
-        self.username = username
-        self.password = password
-        self.email = email
-        self.newborns = []
-
-    def add_newborn(self, name, birthdate):
-        newborn = Newborn(name, birthdate)
-        self.newborns.append(newborn)
-        
-    def get_newborn_by_name(self, name):
-        for newborn in self.newborns:
-            if newborn.name == name:
-                return newborn
-        return None
-    
-    
-    
-    # EXAMPLES #
-    
-# user = User("username", "password", "email")
-# user.add_newborn("Baby", "2022-01-01")
-
-#newborn = user.get_newborn_by_name("Baby")
-
-#newborn.add_recording("2022-01-01", 60, "/path/to/recording.wav")
-
-
-################## DB ##################
-########################################
-
-
-app = Flask(__name__, static_url_path='/static')
-
-CORS(app)
-CORS(app, origins=['http://127.0.0.1:5000'])
-
-app.secret_key = 'mysecretkey'
-
-# Configuration for MongoDB
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/Crybaby'
-mongo = PyMongo(app)
-
-# Define a route for the home page
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        print("hi")
-        # Get the entered username and password from the form
-        username = request.form['username']
-        password = request.form['password']
-
-        # Perform authentication logic here by querying MongoDB
-        # Replace this with your own authentication implementation
-        users = mongo.db.users
-        user = users.find_one({'username': username, 'password': password})
-        if user:
-            
-            session['logged_in'] = True
-            session['username'] = username
-            session['password'] = password
-            session['email']=  users_collection.find_one({'username': username}).get('email')
-
-            # If username and password are correct, redirect to a success page
-            return redirect(url_for('home'))
-        else:
-            # If username and password are incorrect, show an error message
-            error = 'Invalid username or password. Please try again.'
-            return redirect(url_for('login'))
-    else:
-        # If it's a GET request, render the login page
-        return render_template('login.html')
-
-
-@app.route('/logout')
-def logout():
-    # Clear the session data
-    session.pop('logged_in', None)
-    session.clear()
-
-    # Redirect to the login page
-    return redirect(url_for('login'))
-
-
-
-
-@app.route('/home', methods=['GET','POST'])
-def home():
-    print(session)
-    # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in']:
-        # If not, redirect to the login page
-        return redirect(url_for('login'))
-    else:
-        # If the user is logged in, render the home page
-        return render_template('home.html',username=session['username'])
-    
-
-# Define a route for the register page
-@app.route('/register', methods=['GET','POST'])
-def register():
-    
-    if request.method == 'POST':
-        # Get the entered username and password from the form
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-
-        # Check if username or email already exists in the database
-        existing_user = users_collection.find_one({'$or': [{'username': username}, {'email': email}]})
-        if existing_user:
-            flash( "Username or email already exists. Please choose a different username or email.")
-            return redirect(url_for('register'))
-        # Create a new user
-        new_user = User(username, password, email)
-        # Insert the user object into the 'users' collection
-        result = users_collection.insert_one({
-            'username': new_user.username,
-            'password': new_user.password,
-            'email': new_user.email
-        })
-
-        print(f'User added successfully with ID: {result.inserted_id}')
-        # Redirect to the login page after successful registration
-        return redirect(url_for('login'))
-
-    # Render the register page
-    return render_template('register.html')
-
-@app.route('/upload', methods=['POST','GET'])
-def upload():
-    
-    # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in']:
-        # If not, redirect to the login page
-        return redirect(url_for('login'))
-    if request.method == 'GET':
-        return render_template("upload.html")
-    else:
-        file = request.files['file']
-        return predict(file)
-
-@app.route('/record', methods=['POST','GET'])
-def record():
-    # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in']:
-        # If not, redirect to the login page
-        return redirect(url_for('login'))
-    if request.method == 'POST':
-        # Get the file from the request
-        file = request.files['record_file']
-        print(file.content_type)
-        # Check if the file is valid
-        if file and file.filename.endswith('.ogg'):  # Update the file extension based on the actual format
-            # Convert the PCM data to WAV format
-            audio_data = file.read()
-            pcm_audio = AudioSegment.from_file(BytesIO(audio_data), format='ogg;codecs=opus')
-            wav_audio = pcm_audio.export(format='wav')
-
-            # Call your predict() function with the wav_audio data and get the appropriate response based on your application logic
-            result = predict(wav_audio)
-
-            # Return the response
-            return result
-        else:
-            return 'Invalid file format', 400
-    else:
-        return render_template("record.html")
-
-# Define a route for handling predictions
-@app.route('/predict', methods=['POST'])
 def predict(file=None):
     # Check if the user is logged in
     if 'logged_in' not in session or not session['logged_in']:
@@ -351,18 +135,323 @@ def predict(file=None):
         for label, value in prediction_dict.items():
             if value == prediction_dict[max_label]:
                 labels_array.append(label)
-    print(labels_array, file=sys.stderr)
+    return labels_array[0]
+
+
+
+
+
+# Load the model
+model = load_model("model1.h5")
+model.summary()
+
+# Used labels for the model
+label_to_idx = {'Discomfort': 0, 'Hunger': 1, 'Tiredness': 2}
+
+# Connect to MongoDB
+client = MongoClient('mongodb://localhost:27017/')  # Update connection string as per your MongoDB setup
+db = client['Crybaby']  # Replace 'my_database' with the name of your database
+
+# Check if 'users' collection exists in the database
+if 'users' not in db.list_collection_names():
+    # Create 'users' collection
+    users_collection = db['users']
+    print("Collection 'users' created successfully.")
+else:
+    users_collection = db['users']
+    print("Collection 'users' already exists.")
+
+# # Delete all documents in the 'users' collection
+# result = users_collection.delete_many({})  # Empty filter to match all documents
+
+
+
+################## DB ##################
+########################################
+
+
+# Define Recording schema
+class Recording:
+    def __init__(self, date, duration, filepath):
+        self.date = date
+        self.duration = duration
+        self.filepath = filepath
+
+# Define Newborn schema
+class Newborn:
+    def __init__(self, name, birthdate,gender):
+        self.name = name
+        self.birthdate = birthdate
+        self.gender=gender
+        self.recordings = []
+
+    def add_recording(self, date, duration, filepath):
+        recording = Recording(date, duration, filepath)
+        self.recordings.append(recording)
+        
+
+
+# Define User schema
+class User:
+    def __init__(self, username, password, email,vtoken,verified,  loggedin, newborns):
+        self.username = username
+        self.password = password
+        self.email = email
+        self.vtoken=vtoken
+        self.verified=verified
+        self.loggedin=loggedin
+        self.newborns = []
+
+    def add_newborn(self, name, birthdate,gender):
+        newborn = Newborn(name, birthdate,gender)
+        self.newborns.append(newborn)
+        
+    def get_newborn_by_name(self, name):
+        for newborn in self.newborns:
+            if newborn.name == name:
+                return newborn
+        return None
     
-    return display_results(labels_array)
+
+       
+    
+    # EXAMPLES #
+    
+# user = User("username", "password", "email")
+# user.add_newborn("Baby", "2022-01-01")
+
+#newborn = user.get_newborn_by_name("Baby")
+
+#newborn.add_recording("2022-01-01", 60, "/path/to/recording.wav")
+
+
+################## DB ##################
+########################################
+
+
+app = Flask(__name__, static_url_path='/static')
+
+CORS(app)
+CORS(app, origins=['http://127.0.0.1:5000'])
+app.secret_key = 'mysecretkey'
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'appcrybaby@gmail.com'
+app.config['MAIL_PASSWORD'] = 'twckqezoaaprvqls'
+mail = Mail(app)
+
+# Configuration for MongoDB
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/Crybaby'
+mongo = PyMongo(app)
+
+# Define a route for the home page
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Get the entered username and password from the form
+        username = request.form['username']
+        password = request.form['password']
+
+        # Perform authentication logic here by querying MongoDB
+        # Replace this with your own authentication implementation
+        users = mongo.db.users
+        user = users.find_one({'username': username, 'password': password})
+        if user:
+            users_collection.update_one({'username': username}, {'$set': {'loggedin': True}})
+            session['logged_in'] = True
+            session['username'] = username
+            session['password'] = password
+            session['email']=  users_collection.find_one({'username': username}).get('email')
+            session['vtoken']=  users_collection.find_one({'username': username}).get('vtoken')
+            session['verified']=  users_collection.find_one({'username': username}).get('verified')
+            
+
+            # If username and password are correct, redirect to a success page
+            return redirect(url_for('home'))
+        else:
+            # If username and password are incorrect, show an error message
+            error = 'Invalid username or password. Please try again.'
+            return redirect(url_for('login'))
+    else:
+        # If it's a GET request, render the login page
+        return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    # Clear the session data
+    session.pop('logged_in', None)
+    session.clear()
+
+    # Redirect to the login page
+    return redirect(url_for('login'))
+
+@app.route('/home', methods=['GET','POST'])
+def home():
+    print(session)
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
+        flash('You need to log in and verify your account to access this page', 'danger')
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
+    else:
+        # If the user is logged in, render the home page
+        return render_template('home.html',username=session['username'])
+    
+
+# Define a route for the register page
+@app.route('/register', methods=['GET','POST'])
+def register():
+    
+    if request.method == 'POST':
+        # Get the entered username and password from the form
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+
+        # Check if username or email already exists in the database
+        existing_user = users_collection.find_one({'$or': [{'username': username}, {'email': email}]})
+        if existing_user:
+            flash( "Username or email already exists. Please choose a different username or email.")
+            return redirect(url_for('register'))
+        # Create a new user
+        
+        
+        # Generate a verification token
+        token = secrets.token_hex(16)
+        
+        session['logged_in'] = False
+        session['username'] = username
+        session['password'] = password
+        session['email']=  email
+        session['vtoken']=  token
+        session['verified']=  False
+        new_user = User(username, password, email,token,False,False,None)
+
+        # Save the user details and verification token to the database
+        # (you will need to implement this part)
+
+        # Send a verification email to the user
+        msg = Message('Verify Your Account', sender='your_email@gmail.com', recipients=[email])
+        msg.body = f'''
+            Hello {username},
+
+            Thank you for registering for our website. Please click the link below to verify your account:
+
+            {url_for('verify_account')}
+
+            If you did not register for our website, please ignore this message.
+
+            Best regards,
+            The Crybaby App Team
+        '''
+        mail.send(msg)
+
+        flash('A verification email has been sent to your email address. Please verify your account to login.', 'success')
+        
+        
+        # Insert the user object into the 'users' collection
+        result = users_collection.insert_one({
+            'username': new_user.username,
+            'password': new_user.password,
+            'email': new_user.email,
+            'vtoken': token,
+            'verified': False,
+            'loggedin': False,
+            'newborns': []
+        })
+
+        print(f'User added successfully with ID: {result.inserted_id}')
+        # Redirect to the login page after successful registration
+        return redirect(url_for('login'))
+
+    # Render the register page
+    return render_template('register.html')
+
+@app.route('/verify_account', methods=['GET'])
+def verify_account():
+    # Get the verification token from the URL parameter
+    token = request.args.get('token')
+
+    # Find the user with the matching verification token
+    user = users_collection.find_one({'email': session['email'], 'vtoken': session['vtoken']})
+
+    if user:
+        # Update the user's account status to 'verified'
+        users_collection.update_one({'email': session['email'], 'vtoken': session['vtoken']}, {'$set': {'verified': True}})
+
+        flash('Your account has been verified. Please log in.', 'success')
+        return redirect(url_for('login'))
+    else:
+        flash('Invalid verification token. Please try again.', 'danger')
+        return redirect(url_for('register'))
+
+
+@app.route('/upload', methods=['POST','GET'])
+def upload():
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
+        flash('You need to log in and verify your account to access this page', 'danger')
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
+    
+    if request.method == 'GET':
+        return render_template("upload.html")
+    else:
+        file = request.files['file']
+        # call the predict function to get the result
+        res = predict(file)
+        # pass the result to the template as a variable
+        print(res)
+        return render_template("upload.html", result=res)
+
+
+@app.route('/record', methods=['POST','GET'])
+def record():
+    # Check if the user is logged in
+    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
+        flash('You need to log in and verify your account to access this page', 'danger')
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        # Get the file from the request
+        file = request.files['record_file']
+        print(file.content_type)
+        # Check if the file is valid
+        if file and file.filename.endswith('.ogg'):  # Update the file extension based on the actual format
+            # Convert the PCM data to WAV format
+            audio_data = file.read()
+            pcm_audio = AudioSegment.from_file(BytesIO(audio_data), format='ogg;codecs=opus')
+            wav_audio = pcm_audio.export(format='wav')
+
+            # Call your predict() function with the wav_audio data and get the appropriate response based on your application logic
+            result = predict(wav_audio)
+
+            # Return the response
+            return result
+        else:
+            return 'Invalid file format', 400
+    else:
+        return render_template("record.html")
 
 
 @app.route('/history')
 def history():
+    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
+        flash('You need to log in and verify your account to access this page', 'danger')
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
     return render_template('history.html', history=history)
 
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
+    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
+        flash('You need to log in and verify your account to access this page', 'danger')
+        # If not, redirect to the login page
+        return redirect(url_for('login'))
     if request.method == 'GET':
         return render_template('user.html', email=session['email'], username=session['username'], password=session['password'])
     else:
@@ -370,20 +459,32 @@ def user():
     
 @app.route('/newborns', methods=['GET', 'POST'])
 def newborns():
-    if request.method == 'GET':
-        return render_template('newborns.html')
-    else:
-        return redirect(url_for('newborns.html'))
-
-
-# Define a route for displaying the results
-@app.route('/results', methods=['GET'])
-def display_results(labels_array):
-    # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in']:
+    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
+        flash('You need to log in and verify your account to access this page', 'danger')
         # If not, redirect to the login page
         return redirect(url_for('login'))
-    return render_template('results.html', prediction=labels_array)
+    
+    # Load the current user from the database
+    current_user = db.users.find_one({'username': session['username']})
+    
+    if request.method == 'GET':
+        return render_template('newborns.html', newborns=current_user['newborns'])
+    else:
+        # Get the form data
+        name = request.form['name']
+        birthdate = request.form['birthdate']
+        gender = request.form['gender']
+        
+        # Create a new newborn object and add it to the current user
+        newborn = {'name': name, 'birthdate': birthdate, 'gender': gender, 'recordings': []}
+        current_user['newborns'].append(newborn)
+        
+        # Save the updated user to the database
+        db.users.update_one({'username': current_user['username']}, {'$set': current_user})
+        
+        # Redirect to the newborns page
+        return redirect(url_for('newborns'))
+
 
 
 

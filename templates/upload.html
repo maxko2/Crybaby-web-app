@@ -3,17 +3,10 @@
 <head>
   <link rel="stylesheet" href="http://127.0.0.1:5000/static/styles.css">
   <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="icon" type="image/png" href="static/favicon.ico">
   <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
   <title>Upload</title>
-  <style>
-    #upload-button {
-      display: none;
-    }
-    input[type="file"]:valid ~ #upload-button {
-      display: inline;
-    }
-  </style>
 </head>
 <body class="background">
   
@@ -48,11 +41,18 @@
         </div>
       <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file" data-role="file" data-mode="drop" onchange="showUploadButton()">
-        <button type="submit" id="upload-button" class="button primary square outline">Upload</button>
+        <button type="submit" id="upload-button">Upload</button>
       </form>
+      {% if result is defined %}
+        <div>
+          <h3>Prediction Result:</h3>
+          <p>{{ result }}</p>
+        </div>
+      {% endif %}
       </p>
       </div>
     </div>
+
 
 
 
