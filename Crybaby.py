@@ -21,17 +21,11 @@ from PIL import Image
 from pydub import AudioSegment
 from pymongo import MongoClient
 from tensorflow import keras
-from flask_mail import Mail, Message
 import secrets
 
 
 
 def predict(file=None):
-    # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in']:
-        # If not, redirect to the login page
-        return redirect(url_for('login'))
-    # Add cache control headers to prevent caching
     response = app.make_response(render_template('results.html')) 
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
     response.headers['Pragma'] = 'no-cache'  # Prevent caching
@@ -193,12 +187,10 @@ class Newborn:
 
 # Define User schema
 class User:
-    def __init__(self, username, password, email,vtoken,verified,  loggedin, newborns):
+    def __init__(self, username, password, email,  loggedin, newborns):
         self.username = username
         self.password = password
         self.email = email
-        self.vtoken=vtoken
-        self.verified=verified
         self.loggedin=loggedin
         self.newborns = []
 
@@ -235,13 +227,6 @@ CORS(app)
 CORS(app, origins=['http://127.0.0.1:5000'])
 app.secret_key = 'mysecretkey'
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'appcrybaby@gmail.com'
-app.config['MAIL_PASSWORD'] = 'twckqezoaaprvqls'
-mail = Mail(app)
-
 # Configuration for MongoDB
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/Crybaby'
 mongo = PyMongo(app)
@@ -264,8 +249,6 @@ def login():
             session['username'] = username
             session['password'] = password
             session['email']=  users_collection.find_one({'username': username}).get('email')
-            session['vtoken']=  users_collection.find_one({'username': username}).get('vtoken')
-            session['verified']=  users_collection.find_one({'username': username}).get('verified')
             
 
             # If username and password are correct, redirect to a success page
@@ -292,8 +275,7 @@ def logout():
 def home():
     print(session)
     # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
-        flash('You need to log in and verify your account to access this page', 'danger')
+    if 'logged_in' not in session or not session['logged_in'] :
         # If not, redirect to the login page
         return redirect(url_for('login'))
     else:
@@ -325,40 +307,15 @@ def register():
         session['logged_in'] = False
         session['username'] = username
         session['password'] = password
-        session['email']=  email
-        session['vtoken']=  token
-        session['verified']=  False
-        new_user = User(username, password, email,token,False,False,None)
+        session['email']=  email    
+        new_user = User(username, password, email,False,None)
 
-        # Save the user details and verification token to the database
-        # (you will need to implement this part)
-
-        # Send a verification email to the user
-        msg = Message('Verify Your Account', sender='your_email@gmail.com', recipients=[email])
-        msg.body = f'''
-            Hello {username},
-
-            Thank you for registering for our website. Please click the link below to verify your account:
-
-            {url_for('verify_account')}
-
-            If you did not register for our website, please ignore this message.
-
-            Best regards,
-            The Crybaby App Team
-        '''
-        mail.send(msg)
-
-        flash('A verification email has been sent to your email address. Please verify your account to login.', 'success')
-        
-        
+           
         # Insert the user object into the 'users' collection
         result = users_collection.insert_one({
             'username': new_user.username,
             'password': new_user.password,
             'email': new_user.email,
-            'vtoken': token,
-            'verified': False,
             'loggedin': False,
             'newborns': []
         })
@@ -370,30 +327,11 @@ def register():
     # Render the register page
     return render_template('register.html')
 
-@app.route('/verify_account', methods=['GET'])
-def verify_account():
-    # Get the verification token from the URL parameter
-    token = request.args.get('token')
-
-    # Find the user with the matching verification token
-    user = users_collection.find_one({'email': session['email'], 'vtoken': session['vtoken']})
-
-    if user:
-        # Update the user's account status to 'verified'
-        users_collection.update_one({'email': session['email'], 'vtoken': session['vtoken']}, {'$set': {'verified': True}})
-
-        flash('Your account has been verified. Please log in.', 'success')
-        return redirect(url_for('login'))
-    else:
-        flash('Invalid verification token. Please try again.', 'danger')
-        return redirect(url_for('register'))
-
 
 @app.route('/upload', methods=['POST','GET'])
 def upload():
     # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
-        flash('You need to log in and verify your account to access this page', 'danger')
+    if 'logged_in' not in session or not session['logged_in']:
         # If not, redirect to the login page
         return redirect(url_for('login'))
     
@@ -411,8 +349,7 @@ def upload():
 @app.route('/record', methods=['POST','GET'])
 def record():
     # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
-        flash('You need to log in and verify your account to access this page', 'danger')
+    if 'logged_in' not in session or not session['logged_in'] :
         # If not, redirect to the login page
         return redirect(url_for('login'))
     if request.method == 'POST':
@@ -439,8 +376,7 @@ def record():
 
 @app.route('/history')
 def history():
-    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
-        flash('You need to log in and verify your account to access this page', 'danger')
+    if 'logged_in' not in session or not session['logged_in'] :
         # If not, redirect to the login page
         return redirect(url_for('login'))
     return render_template('history.html', history=history)
@@ -448,8 +384,7 @@ def history():
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
-    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
-        flash('You need to log in and verify your account to access this page', 'danger')
+    if 'logged_in' not in session or not session['logged_in']:
         # If not, redirect to the login page
         return redirect(url_for('login'))
     if request.method == 'GET':
@@ -459,8 +394,7 @@ def user():
     
 @app.route('/newborns', methods=['GET', 'POST'])
 def newborns():
-    if 'logged_in' not in session or not session['logged_in'] or not session.get('verified', False):
-        flash('You need to log in and verify your account to access this page', 'danger')
+    if 'logged_in' not in session or not session['logged_in'] :
         # If not, redirect to the login page
         return redirect(url_for('login'))
     
