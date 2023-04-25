@@ -265,10 +265,9 @@ def login():
 
 @app.route('/logout')
 def logout():
+    users_collection.update_one({'username': session['username']}, {'$set': {'loggedin': False}})
     # Clear the session data
-    session.pop('logged_in', None)
     session.clear()
-
     # Redirect to the login page
     return redirect(url_for('login'))
 
