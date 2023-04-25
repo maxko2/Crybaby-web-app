@@ -41,7 +41,7 @@
               <!-- HTML form for recording audio -->
   <form action="/record" id="recordForm" method="post" enctype="multipart/form-data">
     <input type="button" value="Record" id="recordButton">
-    <input type="hidden" id="audioData" name="record_file">
+    <input type="hidden" id="audioData" name="file">
     <input type="button" value="Submit" id="submitButton" style="display: none;">
   </form>
   <audio controls id="audioPlayer"></audio>
@@ -50,11 +50,6 @@
     </div>
 </div>
  
-
-
- 
-  
-
   <script>
     // Function to start recording audio
     function startRecording() {
@@ -93,31 +88,17 @@
               audioDataInput.value = JSON.stringify(chunks);
               
               // Convert chunks to Blob
-              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+              let blob = new Blob(chunks, { type: 'audio/wav' })
               
               // Create FormData object to send file data as multipart/form-data
               let formData = new FormData();
-              formData.append('record_file', blob, 'recorded_audio.wav');
+              formData.append('file', blob, 'recorded_audio.wav');
 
               // Send POST request to Flask endpoint with file data as payload
-              fetch('http://127.0.0.1:5000/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
+              fetch('/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
                 method: 'POST',
                 body: formData
               })
-              .then(response => {
-                // Handle response from server
-                if (response.ok) {
-                  // Handle successful response
-                  // You can add your own logic here based on the response from the server
-                } else {
-                  // Handle unsuccessful response
-                  // You can add your own error handling logic here
-                }
-              })
-              .catch(error => {
-                console.error('Error sending request:', error);
-              });
-
               // Submit the form
               recordForm.submit();
             });
@@ -129,7 +110,7 @@
   
             // Play recorded audio
             mediaRecorder.addEventListener('stop', function() {
-              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+              let blob = new Blob(chunks, { type: 'audio/wav' });
               audioPlayer.src = URL.createObjectURL(blob);
               audioPlayer.controls = true;
               // Show the submit button after recording is finished

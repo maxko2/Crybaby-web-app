@@ -31,6 +31,7 @@ def predict(file=None):
     response.headers['Pragma'] = 'no-cache'  # Prevent caching
     response.headers['Expires'] = '0'  # Prevent caching
     if file is None:
+        print("No file")
         file = request.files['file']
     # Set the sample rate and duration
     sr = 22050
@@ -348,28 +349,22 @@ def upload():
 
 @app.route('/record', methods=['POST','GET'])
 def record():
+    #print(request.files.keys()) 
     # Check if the user is logged in
     if 'logged_in' not in session or not session['logged_in'] :
         # If not, redirect to the login page
         return redirect(url_for('login'))
     if request.method == 'POST':
         # Get the file from the request
-        file = request.files['record_file']
-        print(file.content_type)
+        file = request.files['file']
+        file.save("test.wav")
         # Check if the file is valid
-        if file and file.filename.endswith('.ogg'):  # Update the file extension based on the actual format
-            # Convert the PCM data to WAV format
-            audio_data = file.read()
-            pcm_audio = AudioSegment.from_file(BytesIO(audio_data), format='ogg;codecs=opus')
-            wav_audio = pcm_audio.export(format='wav')
+        # Call your predict() function with the wav_audio data and get the appropriate response based on your application logic
+        result = predict(file)
+        # Return the response
+        print(result)
+        return result
 
-            # Call your predict() function with the wav_audio data and get the appropriate response based on your application logic
-            result = predict(wav_audio)
-
-            # Return the response
-            return result
-        else:
-            return 'Invalid file format', 400
     else:
         return render_template("record.html")
 
@@ -382,6 +377,7 @@ def history():
     return render_template('history.html', history=history)
 
 
+
 @app.route('/user', methods=['GET', 'POST'])
 def user():
     if 'logged_in' not in session or not session['logged_in']:
@@ -390,6 +386,12 @@ def user():
     if request.method == 'GET':
         return render_template('user.html', email=session['email'], username=session['username'], password=session['password'])
     else:
+        new_password = request.form['password']
+        new_email = request.form['email']
+        users = mongo.db.users
+        users.update_one({'username': session['username']}, {'$set': { 'password': new_password, 'email': new_email}}) 
+        session['password'] = new_password
+        session['email']=  new_email
         return redirect(url_for('home'))
     
 @app.route('/newborns', methods=['GET', 'POST'])
