@@ -78,12 +78,12 @@ def predict(file=None):
         img1 = librosa.power_to_db(img1, ref=np.max)
         img1 = cv2.normalize(img1, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)  # Normalize to [0,255] for the color map
         img1 = cv2.applyColorMap(img1, cv2.COLORMAP_MAGMA)  # Apply 'jet' color map
-        #cv2.imwrite(img1_filename, img1)  # Save the spectrogram as an image with 'jet' color map
+        cv2.imwrite(img1_filename, img1)  # Save the spectrogram as an image with 'MAGMA' color map
 
         img2 = librosa.power_to_db(img2, ref=np.max)
         img2 = cv2.normalize(img2, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)  # Normalize to [0,255] for the color map
         img2 = cv2.applyColorMap(img2, cv2.COLORMAP_MAGMA)  # Apply 'jet' color map
-        #cv2.imwrite(img2_filename, img2)  # Save the spectrogram as an image with 'jet' color map
+        cv2.imwrite(img2_filename, img2)  # Save the spectrogram as an image with 'MAGMA' color map
             
 
         images=[]
@@ -112,7 +112,11 @@ def predict(file=None):
         prediction = model.predict(images)
         prediction=np.sum(prediction, axis=0)
 
-       
+        # Delete the files
+        os.remove(img1_filename)
+        os.remove(img2_filename)
+
+
         
         print(prediction)
         
