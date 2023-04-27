@@ -22,7 +22,9 @@ from pydub import AudioSegment
 from pymongo import MongoClient
 from tensorflow import keras
 import secrets
-
+import subprocess
+from scipy.io import wavfile
+from werkzeug.datastructures import FileStorage
 
 
 def predict(file=None):
@@ -350,20 +352,43 @@ def upload():
         return render_template("upload.html", result=res)
 
 
-@app.route('/record', methods=['POST','GET'])
+from scipy.io import wavfile
+import subprocess
+
+@app.route('/record', methods=['POST', 'GET'])
 def record():
-    #print(request.files.keys()) 
     # Check if the user is logged in
-    if 'logged_in' not in session or not session['logged_in'] :
+    if 'logged_in' not in session or not session['logged_in']:
         # If not, redirect to the login page
         return redirect(url_for('login'))
+
     if request.method == 'POST':
         # Get the file from the request
-        file = request.files['file']
-        file.save("test.wav")
-        # Check if the file is valid
-        # Call your predict() function with the wav_audio data and get the appropriate response based on your application logic
-        result = predict(file)
+        file = request.files.get('file')
+
+        if file is None:
+            # Return an error message if the file is not in the request
+            return 'No file uploaded', 400
+
+        # Get the filename from the request object
+        filename = request.form.get('filename')
+        if not filename:
+            filename = 'output.wav'
+
+        # Save the file to disk
+        file_path = 'input.bin'
+        file.save(file_path)
+
+        # Use FFmpeg to convert the file to WAV format
+        output_file_path = f'{filename}'
+        subprocess.call(['ffmpeg', '-y', '-i', file_path, output_file_path])
+
+        file = open('output.wav', 'rb')
+        filename = 'output.wav'
+
+        data = FileStorage(file, filename)
+        result = predict(data)
+
         # Return the response
         print(result)
         return result
