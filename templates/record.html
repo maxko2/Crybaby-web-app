@@ -37,20 +37,92 @@
         <p>
           <div class="remark alert">
             <h3>Make a new recording</h3>
-          </div>
               <!-- HTML form for recording audio -->
-  <form action="/record" id="recordForm" method="post" enctype="multipart/form-data">
-    <input type="button" value="Record" id="recordButton">
-    <input type="hidden" id="audioData" name="file">
-    <input type="button" value="Submit" id="submitButton" style="display: none;">
-  </form>
-  <audio controls id="audioPlayer"></audio>
+                <form action="/record" id="recordForm" method="post" enctype="multipart/form-data">
+                <!--input type="button" value="Record" id="recordButton">
+                <input type="hidden" id="audioData" name="record_file">
+                <input type="button" value="Submit" id="submitButton" style="display: none;"-->
+                <button id="startRecording">Start recording</button>
+                <button id="stopRecording" disabled>Stop recording</button>
+                <button id="downloadAudio" disabled>Stop recording</button>
+
+               </form>
+              <audio controls id="audioPlayer"></audio>
   
+            <script>
+                navigator
+                    .mediaDevices
+                    .getUserMedia({audio: true})
+                    .then(stream => { handlerFunction(stream) });
+
+                function handlerFunction(stream) {
+                    rec = new MediaRecorder(stream);
+                    rec.ondataavailable = e => {
+                        audioChunks.push(e.data);
+                        if (rec.state == "inactive") {
+                            let blob = new Blob(audioChunks, {'type': 'audio/ogg; codecs=opus'});
+                            sendData(blob);
+
+                        }
+                    }
+                }
+
+                function sendData(data) {
+                    var form = new FormData();
+                    const duration = Math.ceil(data.size / (44100 * 2 * 1)); 
+                    document.getElementById('audioPlayer').setAttribute('duration', duration);
+                    form.append('file', data, 'data.ogg');
+                    form.append('title', 'data.ogg');
+                    form.append('duration', duration);
+                    //Chrome inspector shows that the post data includes a file and a title.
+                    fetch('/record', {method: 'POST', body: form})
+                    .then(response => {
+                    console.log(response); });                             
+                   }
+
+                   let recTimeout;
+
+                    startRecording.onclick = e => {
+                    console.log('Recording has started..');
+                    startRecording.disabled = true;
+                    stopRecording.disabled = false;
+                    audioChunks = [];
+                    rec.start();
+                    recTimeout = setTimeout(() => {
+                    stopRecording.click();
+                          }, 7000);
+                      };
+
+                      stopRecording.onclick = e => {
+                      console.log("Recording has stopped.");
+                      startRecording.disabled = false;
+                      stopRecording.disabled = true;
+                      rec.stop();
+                          clearTimeout(recTimeout);
+                      };
+
+                      const downloadAudio = () => {
+                      const downloadLink = document.createElement('a')
+                      downloadLink.href = audioURL
+                      downloadLink.setAttribute('download', 'audio')
+                      downloadLink.click()
+                  }
+              </script>
+          </div>
         </p>
-    </div>
-</div>
+      </div>
+  
+      // Call the startRecording function when the page loads
+      window.onload = startRecording;
+    
+  </body>
+</html>
+  
+
  
-  <script>
+  
+
+  <!-- <script>
     // Function to start recording audio
     function startRecording() {
       let recordButton = document.getElementById('recordButton');
@@ -88,17 +160,31 @@
               audioDataInput.value = JSON.stringify(chunks);
               
               // Convert chunks to Blob
-              let blob = new Blob(chunks, { type: 'audio/wav' })
+              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
               
               // Create FormData object to send file data as multipart/form-data
               let formData = new FormData();
-              formData.append('file', blob, 'recorded_audio.wav');
+              formData.append('record_file', blob, 'recorded_audio.wav');
 
               // Send POST request to Flask endpoint with file data as payload
-              fetch('/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
+              fetch('http://127.0.0.1:5000/record', {  // Update the endpoint URL to match your backend Flask endpoint for handling file uploads
                 method: 'POST',
                 body: formData
               })
+              .then(response => {
+                // Handle response from server
+                if (response.ok) {
+                  // Handle successful response
+                  // You can add your own logic here based on the response from the server
+                } else {
+                  // Handle unsuccessful response
+                  // You can add your own error handling logic here
+                }
+              })
+              .catch(error => {
+                console.error('Error sending request:', error);
+              });
+
               // Submit the form
               recordForm.submit();
             });
@@ -110,7 +196,7 @@
   
             // Play recorded audio
             mediaRecorder.addEventListener('stop', function() {
-              let blob = new Blob(chunks, { type: 'audio/wav' });
+              let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
               audioPlayer.src = URL.createObjectURL(blob);
               audioPlayer.controls = true;
               // Show the submit button after recording is finished
@@ -121,11 +207,6 @@
             console.error('Error accessing microphone:', error);
           });
       }
-    }
+    } -->
   
-    // Call the startRecording function when the page loads
-    window.onload = startRecording;
-  </script>
-  
-</body>
-</html>
+ 
