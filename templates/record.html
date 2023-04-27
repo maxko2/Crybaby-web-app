@@ -8,7 +8,7 @@
   <title>Record</title>
 
 </head>
-<body class="background">
+<body class>
 
 
   <aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
@@ -69,7 +69,7 @@
 
                 function sendData(data) {
                     var form = new FormData();
-                    const duration = Math.ceil(data.size / (44100 * 2 * 1)); 
+                    const duration = 7;
                     document.getElementById('audioPlayer').setAttribute('duration', duration);
                     form.append('file', data, 'data');
                     //Chrome inspector shows that the post data includes a file and a title.
@@ -88,7 +88,7 @@
                     rec.start();
                     recTimeout = setTimeout(() => {
                     stopRecording.click();
-                          }, 7000);
+                          }, 9000);
                       };
 
                       stopRecording.onclick = e => {
