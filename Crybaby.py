@@ -1,29 +1,16 @@
-import json
-import logging
 import os
 import sys
 import time
-import uuid
-from io import BytesIO
 import cv2
 import librosa
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy.io.wavfile as wav
-import sounddevice as sd
-import tensorflow as tf
 from flask import Flask, flash, redirect, render_template, request, url_for, session
 from flask_cors import CORS
 from flask_pymongo import PyMongo
-from keras.layers import Dense
-from keras.models import Sequential, load_model
+from keras.models import  load_model
 from PIL import Image
-from pydub import AudioSegment
 from pymongo import MongoClient
-from tensorflow import keras
-import secrets
 import subprocess
-from scipy.io import wavfile
 from werkzeug.datastructures import FileStorage
 
 
