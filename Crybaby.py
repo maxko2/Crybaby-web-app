@@ -307,9 +307,6 @@ def register():
         # Create a new user
         
         
-        # Generate a verification token
-        token = secrets.token_hex(16)
-        
         session['logged_in'] = False
         session['username'] = username
         session['password'] = password
