@@ -1,5 +1,7 @@
 class Recording:
-    def __init__(self, date, duration, filepath):
+       def __init__(self, name, date, duration, filedata, label=None, feedback=None):
+        self.name = name
         self.date = date
-        self.duration = duration
-        self.filepath = filepath
+        self.filedata = filedata
+        self.label = label
+        self.feedback = feedback

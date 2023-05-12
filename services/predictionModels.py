@@ -6,21 +6,17 @@ import time
 import cv2
 import librosa
 import numpy as np
-from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask import Flask, flash, redirect, render_template, request, url_for, session, current_app
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 from keras.models import  load_model
 from PIL import Image
 from pymongo import MongoClient
-import subprocess
 from werkzeug.datastructures import FileStorage
 
 
 def predict(file=None):
-    response = app.make_response(render_template('results.html')) 
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
-    response.headers['Pragma'] = 'no-cache'  # Prevent caching
-    response.headers['Expires'] = '0'  # Prevent caching
+
     if file is None:
         print("No file")
         file = request.files['file']
@@ -97,6 +93,11 @@ def predict(file=None):
             # Add the image data to the list
             images.append(img_array)
 
+
+        # Load the model
+        model = load_model("model1.h5")
+        model.summary()
+
         # Convert the list of images to a batch of images
         images = np.stack(images, axis=0)
         # Make a prediction using the model
@@ -111,6 +112,10 @@ def predict(file=None):
         
         print(prediction)
         
+
+        # Used labels for the model
+        label_to_idx = {'Discomfort': 0, 'Hunger': 1, 'Tiredness': 2}
+
         # Convert the prediction to a dictionary
         prediction_dict = {}
         for label, idx in label_to_idx.items():
@@ -125,4 +130,6 @@ def predict(file=None):
         for label, value in prediction_dict.items():
             if value == prediction_dict[max_label]:
                 labels_array.append(label)
-    return labels_array[0]
+        return labels_array[0]
+
+
