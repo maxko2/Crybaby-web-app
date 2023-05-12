@@ -46,6 +46,11 @@
                 <button id="stopRecording" disabled>Stop recording</button>
                 <button id="downloadAudio" disabled>Download</button>
 
+                <select name="newborn">
+                  {% for n in newborns %}
+                    <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+                  {% endfor %}
+                </select>
                </form>
               <audio controls id="audioPlayer"></audio>
   
@@ -88,7 +93,7 @@
                     rec.start();
                     recTimeout = setTimeout(() => {
                     stopRecording.click();
-                          }, 9000);
+                          }, 7500);
                       };
 
                       stopRecording.onclick = e => {
