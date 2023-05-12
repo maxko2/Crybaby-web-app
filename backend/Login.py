@@ -28,7 +28,7 @@ def login():
         else:
             # If username and password are incorrect, show an error message
             error = 'Invalid username or password. Please try again.'
-            return redirect(url_for('Login.login'))
+            return redirect(url_for('login.login'))
     else:
         # If it's a GET request, render the login page
         return render_template('login.html')

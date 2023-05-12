@@ -10,17 +10,20 @@ from backend.Record import record_bp
 from backend.History import history_bp
 from backend.Newborns import newborns_bp
 from backend.User import user_bp
-
+from backend.Edit import edit_bp
+from backend.Edit import delete_bp
+       
+    
 
 app = Flask(__name__, static_url_path='/static')
+
 CORS(app)
 CORS(app, origins=['http://127.0.0.1:5000'])
 app.secret_key = 'mysecretkey'
 
-# Configuration for MongoDB
+## Configuration for MongoDB
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/Crybaby'
 app.config['mongo'] = PyMongo(app)
-
 app.register_blueprint(login_bp, url_prefix='/')
 app.register_blueprint(logout_bp)
 app.register_blueprint(home_bp)
@@ -30,6 +33,18 @@ app.register_blueprint(record_bp)
 app.register_blueprint(history_bp)
 app.register_blueprint(newborns_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(edit_bp)
+app.register_blueprint(delete_bp)
 
 
-if __name__ == '__main__':    app.run(debug=True)
+
+    
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

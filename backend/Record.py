@@ -3,6 +3,7 @@ from flask import Blueprint, request, session,redirect,url_for,render_template,f
 from services.predictionModels import predict
 from services.mongoDB import db
 from werkzeug.datastructures import FileStorage
+from datetime import datetime
 
 record_bp = Blueprint('record', __name__ )
 
@@ -42,8 +43,18 @@ def record():
         filename = 'output.wav'
 
         data = FileStorage(file, filename)
-        result = predict(data)
-
+        res = predict(data)
+        print(res)
+        filename=request.form['recording_name']
+        binary_data = data.read()
         # Return the response
-        print(result)
-        return result
+        # Get the selected newborn's name from the form
+        selected_newborn_name = request.form['newborn_name']
+        # datetime object containing current date and time
+        now = datetime.now()
+        # dd/mm/YY H:M:S
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        db.users.update_one(
+            {"username": session['username'], "newborns.name": selected_newborn_name},
+            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string,  "file": binary_data, "label": res}}})
+        return render_template("record.html", result=res,newborns=newborns)

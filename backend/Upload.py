@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, session,redirect,url_for,render_template,flash
 from services.predictionModels import predict
 from services.mongoDB import db
+from datetime import datetime
 
 upload_bp = Blueprint('upload', __name__, )
 
@@ -26,6 +27,7 @@ def upload():
         res = predict(file)
         # pass the result to the template as a variable
         print(res)
+        file.filename=request.form['recording_name']
         binary_data = file.read()
         # Get the selected newborn's name from the form
         selected_newborn_name = request.form['newborn_name']
@@ -33,8 +35,7 @@ def upload():
         now = datetime.now()
         # dd/mm/YY H:M:S
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        recording_name = request.form['recording_name']
         db.users.update_one(
-    {"username": session['username'], "newborns.name": selected_newborn_name},
-    {"$push": {"newborns.$.recordings": {"name": recording_name, "date": dt_string,  "file": binary_data, "label": res}}})
+            {"username": session['username'], "newborns.name": selected_newborn_name},
+            {"$push": {"newborns.$.recordings": {"name": file.filename, "date": dt_string,  "file": binary_data, "label": res}}})
         return render_template("upload.html", result=res,newborns=newborns)

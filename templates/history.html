@@ -1,46 +1,97 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="http://127.0.0.1:5000/static/styles.css">
+    <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/png" href="static/favicon.ico">
+    <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
     <title>History</title>
     <a href="{{ url_for('history.history') }}"></a>
   </head>
-  <link rel="stylesheet" href="http://127.0.0.1:5000/static/styles.css">
-  <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
-  <link rel="icon" type="image/png" href="static/favicon.ico">
-  <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
-  <body class="background">
-    <h1>History</h1>
-    <ul>
-        <table class="table table-border cell-border">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td class="info">Bill</td>
-                <td>Gates</td>
-                <td>@billy</td>
-            </tr>
-            <tr class="yellow">
-                <td>2</td>
-                <td>Steve</td>
-                <td>Jobs</td>
-                <td class="success">@stevy</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td class="alert">Larry</td>
-                <td>Page</td>
-                <td>@larry</td>
-            </tr>
-            </tbody>
-        </table>
+  <body>
+<aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
+    <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+      <div class="avatar"></div>
+      <span class="title fg-black">Crybaby</span>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="/home"><span class="mif-home icon"></span>Home</a></li>
+      <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
+      <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
+      <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
+      <li><a href="/newborns"><span class="mif-organization icon"></span>Newborns</a></li>
+      <li><a href="/username"><span class="mif-user icon"></span>User</a></li>
+      <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
     </ul>
-  </body>
+  </aside>
+  <div class="shifted-content h-100 p-ab">
+    <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
+        <button class="app-bar-item c-pointer" id="sidebar-toggle-3">
+            <span class="mif-menu fg-white"></span>
+        </button>
+    </div>
+  
+    <div class="h-100 p-4">
+      
+      <select name="newborn_name">
+        {% for n in newborns %}
+        <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+        {% endfor %}
+      </select>
+      
+      <table class="table" data-role="table">
+        <thead>
+          <tr>
+            <th data-sortable="true" data-sort-dir="asc">Recording Name</th>
+            <th data-sortable="true" data-sort-dir="asc">Date</th>
+            <th data-sortable="true" data-sort-dir="asc">Prediction</th>
+            <th>File</th>
+            <th>Feedback</th>
+          </tr>
+        </thead>
+        <tbody id="recording-table-body">
+        </tbody>
+      </table>
+      
+      <script>
+        const newbornDropdown = document.querySelector('[name=newborn_name]');
+        const recordingTableBody = document.getElementById('recording-table-body');
+        
+        newbornDropdown.addEventListener('change', (event) => {
+          const selectedNewbornName = event.target.value;
+        
+          // clear existing table rows
+          recordingTableBody.innerHTML = '';
+        
+          // display recordings for selected newborn
+          const selectedNewborn = newborns.find(n => n.name === selectedNewbornName);
+          selectedNewborn.recordings.forEach((recording) => {
+            const tr = document.createElement('tr');
+            const tdRecordingName = document.createElement('td');
+            tdRecordingName.textContent = recording.name;
+            const tdDate = document.createElement('td');
+            tdDate.textContent = recording.date;
+            const tdPrediction = document.createElement('td');
+            tdPrediction.textContent = recording.prediction;
+            const tdFile = document.createElement('td');
+            const fileLink = document.createElement('a');
+            fileLink.href = recording.file_url;
+            fileLink.textContent = 'Download';
+            tdFile.appendChild(fileLink);
+            const tdFeedback = document.createElement('td');
+            tdFeedback.textContent = recording.feedback;
+            tr.appendChild(tdRecordingName);
+            tr.appendChild(tdDate);
+            tr.appendChild(tdPrediction);
+            tr.appendChild(tdFile);
+            tr.appendChild(tdFeedback);
+            recordingTableBody.appendChild(tr);
+          });
+        });
+      </script>
+    </div>
+  </div>
+
+</body>
 </html>

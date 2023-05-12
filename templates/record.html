@@ -35,82 +35,83 @@
     </div>
 
     <div class="h-100 p-4">
-        <p>
+          <div id="record-form">
+            <p>
           <div class="remark alert">
             <h3>Make a new recording</h3>
               <!-- HTML form for recording audio -->
-                <form action="/record" id="recordForm" method="post" enctype="multipart/form-data">
-                <!--input type="button" value="Record" id="recordButton">
-                <input type="hidden" id="audioData" name="record_file">
-                <input type="button" value="Submit" id="submitButton" style="display: none;"-->
+                <form action="/record"  method="post" enctype="multipart/form-data">
                 <button id="startRecording">Start recording</button>
                 <button id="stopRecording" disabled>Stop recording</button>
-                <button id="downloadAudio" disabled>Download</button>
 
-                <select name="newborn">
+                <select name="newborn_name">
                   {% for n in newborns %}
-                    <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+                  <option value="{{ n['name'] }}">{{ n['name'] }}</option>
                   {% endfor %}
                 </select>
+                <input type="text" name="recording_name" placeholder="Enter recording name">
                </form>
-              <audio controls id="audioPlayer"></audio>
+               {% if result is defined %}
+               <div>
+                 <h3>Prediction Result:</h3>
+                 <p>{{ result }}</p>
+               </div>
+             {% endif %}
+             </p>
   
-            <script>
-                navigator
-                    .mediaDevices
-                    .getUserMedia({audio: true})
-                    .then(stream => { handlerFunction(stream) });
-
-                function handlerFunction(stream) {
-                    rec = new MediaRecorder(stream);
-                    rec.ondataavailable = e => {
-                        audioChunks.push(e.data);
-                        if (rec.state == "inactive") {
-                          let blob = new Blob(audioChunks);
-                            sendData(blob);
-
-                        }
-                    }
-                }
-
-                function sendData(data) {
-                    var form = new FormData();
-                    const duration = 7;
-                    document.getElementById('audioPlayer').setAttribute('duration', duration);
-                    form.append('file', data, 'data');
-                    //Chrome inspector shows that the post data includes a file and a title.
-                    fetch('/record', {method: 'POST', body: form})
-                    .then(response => {
-                    console.log(response); });                             
-                   }
-
-                   let recTimeout;
-
-                    startRecording.onclick = e => {
-                    console.log('Recording has started..');
-                    startRecording.disabled = true;
-                    stopRecording.disabled = false;
-                    audioChunks = [];
-                    rec.start();
-                    recTimeout = setTimeout(() => {
-                    stopRecording.click();
-                          }, 7500);
-                      };
-
-                      stopRecording.onclick = e => {
-                      console.log("Recording has stopped.");
-                      startRecording.disabled = false;
-                      stopRecording.disabled = true;
-                      rec.stop();
-                          clearTimeout(recTimeout);
-                      };                                                       
-              </script>
           </div>
-        </p>
       </div>
-  
-      // Call the startRecording function when the page loads
-      window.onload = startRecording;
-    
+      <script>
+        navigator
+            .mediaDevices
+            .getUserMedia({audio: true})
+            .then(stream => { handlerFunction(stream) });
+
+        function handlerFunction(stream) {
+            rec = new MediaRecorder(stream);
+            rec.ondataavailable = e => {
+                audioChunks.push(e.data);
+                if (rec.state == "inactive") {
+                  let blob = new Blob(audioChunks);
+                    sendData(blob);
+
+                }
+            }
+        }
+
+        function sendData(data) {
+          const form = new FormData(document.querySelector('form'));
+          const newbornName = document.querySelector('select[name="newborn_name"]').value;
+          const recordingName = document.querySelector('input[name="recording_name"]').value;
+          form.append('newborn_name', newbornName);
+          form.append('recording_name', recordingName);
+          form.append('file', data, 'data');
+          fetch('/record', { method: 'POST', body: form })
+            .then(response => {
+              console.log(response);
+            });
+        }
+
+           let recTimeout;
+
+            startRecording.onclick = e => {
+            console.log('Recording has started..');
+            startRecording.disabled = true;
+            stopRecording.disabled = false;
+            audioChunks = [];
+            rec.start();
+            recTimeout = setTimeout(() => {
+            stopRecording.click();
+                  }, 7500);
+              };
+
+              stopRecording.onclick = e => {
+              console.log("Recording has stopped.");
+              startRecording.disabled = false;
+              stopRecording.disabled = true;
+              rec.stop();
+                  clearTimeout(recTimeout);
+              };                                                       
+      </script>
   </body>
 </html>
