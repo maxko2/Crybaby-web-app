@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://127.0.0.1:5000/static/styles.css">
+    <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/png" href="static/favicon.ico">
+    <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
+    <title>User Page</title>
+  </head>
+  <body background="static/background.png">
+<aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content" >
+    <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+      <div class="avatar"></div>
+      <span class="title fg-black">Crybaby</span>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="/home"><span class="mif-home icon"></span>Home</a></li>
+      <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
+      <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
+      <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
+      <li><a href="/newborns"><span class="mif-organization icon"></span>Newborns</a></li>
+      <li><a href="/username"><span class="mif-user icon"></span>User</a></li>
+      <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
+    </ul>
+  </aside>
+  <div class="shifted-content h-100 p-ab">
+    <div class="app-bar pos-absolute bg-red z-1" data-role="appbar">
+        <button class="app-bar-item c-pointer" id="sidebar-toggle-3">
+            <span class="mif-menu fg-white"></span>
+        </button>
+    </div>
+  
+    <div class="h-100 p-4">
+      <p>
+        <form action="/newborns/{{ index }}/edit" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <label for="name">Name:</label>
+            <input type="text" name="name" value="{{ newborn['name'] }}">
+            <div class="form-group">
+                <label for="birthdate">Birthdate:</label>
+                <div class="input-wrapper">
+                  <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true">
+                </div>
+        <label for="gender">Gender:</label>
+            <select id="gender" name="gender" class="form-content">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select><br>
+            <button type="submit" class="button success small">Save</button>
+          </form>
+      </p>
+  </div>
+  </div>
+
+</body>
+</html>
