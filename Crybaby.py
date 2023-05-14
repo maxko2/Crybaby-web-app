@@ -12,8 +12,7 @@ from backend.Newborns import newborns_bp
 from backend.User import user_bp
 from backend.Edit import edit_bp
 from backend.Edit import delete_bp
-       
-    
+           
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -35,11 +34,6 @@ app.register_blueprint(newborns_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(edit_bp)
 app.register_blueprint(delete_bp)
-
-
-
-    
-
 
 
 

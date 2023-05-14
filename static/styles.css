@@ -15,11 +15,17 @@
 
 .shifted-content {
   position: fixed;
+  transition: margin-left 0.2s ease;
+
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
   opacity: 1;
+}
+
+.shifted {
+  margin-left: 240px; 
 }
 
 .app-bar {
@@ -62,6 +68,19 @@ label {
   margin: 6rem auto 8.1rem auto;
   width: 329px;
   opacity: 1;
+}
+
+#largecard {
+  position: center;
+  background: #fbfbfb;
+  border-radius: 8px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.65);
+  height: 700px;
+  margin: 6rem auto 8.1rem auto;
+  width: 600px;
+  opacity: 1;
+  z-index: 1; 
+
 }
 #card2{
   background: #fbfbfb;
@@ -247,3 +266,4 @@ input[type="file"]:valid ~ #upload-button {
 .input-wrapper {
   max-width: 250px;
 }
+

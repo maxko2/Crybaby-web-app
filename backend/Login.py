@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session, url_for , current_app
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for , current_app
 import flask
 from services.mongoDB import users_collection
 from flask_pymongo import PyMongo
@@ -27,8 +27,8 @@ def login():
             return redirect(url_for('home.home'))
         else:
             # If username and password are incorrect, show an error message
-            error = 'Invalid username or password. Please try again.'
-            return redirect(url_for('login.login'))
+            flash('Invalid username or password. Please try again.')
+            return render_template('login.html')
     else:
         # If it's a GET request, render the login page
         return render_template('login.html')
