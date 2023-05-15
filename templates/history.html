@@ -10,9 +10,8 @@
     <a href="{{ url_for('history.history') }}"></a>
   </head>
   <body>
-    {% include 'navbar.html' %}  
+    {% include 'navbar.html' %}
     <div class="h-100 p-4">
-      
       <select name="newborn_name">
         {% for n in newborns %}
         <option value="{{ n['name'] }}">{{ n['name'] }}</option>

@@ -10,8 +10,9 @@
     <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
 </head>
 <body class>
-
+    {% include 'navbar.html' %}
         <div class="h-100 p-4">
+            <div id="largecard">
             <p>
             <div class="remark alert">
                 <h3>Newborns</h3>
@@ -19,14 +20,14 @@
             <div>
                 <form action="/newborns" method="POST">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" class="form-content"><br>
+                    <input type="text" id="name" name="name" class="form-content" required><br>
                          <div class="form-group">
                 <label for="birthdate">Birthdate:</label>
                 <div class="input-wrapper">
-                  <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true">
+                    <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}">
                 </div>
                     <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" class="form-content">
+                    <select id="gender" name="gender" class="form-content" required>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                     </select><br>
@@ -64,7 +65,7 @@
 			</table>
 	</div>
 </div>
-{% include 'navbar.html' %}
+</div>
 
       </body>
       </html>
