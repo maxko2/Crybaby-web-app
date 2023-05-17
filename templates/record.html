@@ -9,14 +9,11 @@
   <title>Record</title>
 
 </head>
-<body class>
-
-
-  {% include 'navbar.html' %}
-
+<body class="background">
     <div class="h-100 p-4">
+      <div  id="largecard">
           <div id="record-form">
-            <p>
+          <p>
           <div class="remark alert">
             <h3>Make a new recording</h3>
               <!-- HTML form for recording audio -->
@@ -40,6 +37,7 @@
              </p>
   
           </div>
+      </div>
       </div>
       <script>
         navigator
@@ -93,5 +91,6 @@
                   clearTimeout(recTimeout);
               };                                                       
       </script>
+     {% include 'navbar.html' %}
   </body>
 </html>

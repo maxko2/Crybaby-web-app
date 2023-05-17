@@ -9,64 +9,61 @@
 
     <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
 </head>
-<body class>
+<body class="background">
     {% include 'navbar.html' %}
-        <div class="h-100 p-4">
-            <div id="largecard">
+    <div class="h-100 p-4">
+        <div id="largecard">
             <p>
-            <div class="remark alert">
-                <h3>Newborns</h3>
-            </div>
-            <div>
-                <form action="/newborns" method="POST">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" class="form-content" required><br>
-                         <div class="form-group">
-                <label for="birthdate">Birthdate:</label>
-                <div class="input-wrapper">
-                    <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}">
+                <div class="remark alert">
+                    <h3 >Newborns</h3>
                 </div>
-                    <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" class="form-content" required>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select><br>
-                    <input type="submit" value="Submit" id="submit-btn">
-                </form>
-
-			
-			<table class="table" data-role="table">
-				<thead>
-					<tr>
-						<th data-sortable="true" data-sort-dir="asc">Name</th>
-						<th data-sortable="true" data-sort-dir="asc">Date of Birth</th>
-						<th data-sortable="true" data-sort-dir="asc">Gender</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for newborn in newborns %}
-<tr>
-    <td>{{ newborn['name'] }}</td>
-    <td>{{ newborn['birthdate'] }}</td>
-    <td>{{ newborn['gender'] }}</td>
-    <td>
-		<form action="/newborns/{{ loop.index0 }}" method="POST">
-			<input type="hidden" name="_method" value="DELETE">
-			<button type="submit" class="button alert small" style="float: left;">Delete</button>
-		</form>
-		<form action="/newborns/{{ loop.index0 }}/edit" method="GET">
-			<button type="submit" class="button success small" style="float: left; margin-left: 10px;">Edit</button>
-		</form>
-    </td>
-</tr>
-{% endfor %}
-				</tbody>
-			</table>
-	</div>
-</div>
-</div>
-
-      </body>
-      </html>
+                    <form action="/newborns" method="POST">
+                        <label for="name" >Name:</label>
+                        <input type="text" id="name" name="name" class="form-content" required><br>
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate:</label>
+                            <div class="input-wrapper">
+                                <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}">
+                            </div>
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" class="form-content" required>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select><br>
+                            <input type="submit" value="Submit" id="submit-btn">                           
+                    </form>			
+                    <table class="table" data-role="table">
+                        <thead>
+                            <tr>
+                                <th data-sortable="true" data-sort-dir="asc">Name</th>
+                                <th data-sortable="true" data-sort-dir="asc">Date of Birth</th>
+                                <th data-sortable="true" data-sort-dir="asc">Gender</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for newborn in newborns %}
+                            <tr>
+                                <td>{{ newborn['name'] }}</td>
+                                <td>{{ newborn['birthdate'] }}</td>
+                                <td>{{ newborn['gender'] }}</td>
+                                <td>
+                                    <form action="/newborns/{{ loop.index0 }}" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="button alert small" style="float: left;">Delete</button>
+                                    </form>
+                                    <form action="/newborns/{{ loop.index0 }}/edit" method="GET">
+                                        <button type="submit" class="button success small" style="float: left; margin-left: 10px;">Edit</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
       
