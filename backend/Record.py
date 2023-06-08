@@ -46,7 +46,7 @@ def record():
         res = predict(data)
         print(res)
         filename=request.form['recording_name']
-        binary_data = data.read()
+        file.seek(0)
         # Return the response
         # Get the selected newborn's name from the form
         selected_newborn_name = request.form['newborn_name']
@@ -56,5 +56,5 @@ def record():
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         db.users.update_one(
             {"username": session['username'], "newborns.name": selected_newborn_name},
-            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string,  "file": binary_data, "label": res}}})
+            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string,  "file": file.read(), "label": res}}})
         return render_template("record.html", result=res,newborns=newborns)
