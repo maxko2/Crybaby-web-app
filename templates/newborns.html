@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Newborns</title>
-    <link rel="stylesheet" href="http://127.0.0.1:5000/static/styles.css">
-    <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
-    <link rel="icon" type="image/png" href="static/favicon.ico">
+    {% include 'links.html' %}
 	<a href="{{ url_for('newborns.newborns') }}"></a>
 
-    <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
 </head>
 <body class="background">
-    {% include 'navbar.html' %}
     <div class="h-100 p-4">
         <div id="largecard">
             <p>
@@ -65,5 +60,7 @@
         </div>
     </div>
 </body>
+{% include 'navbar.html' %}
+
 </html>
       
