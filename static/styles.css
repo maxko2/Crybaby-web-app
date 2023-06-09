@@ -109,7 +109,6 @@ label {
 }
 
 .table-container{
-<<<<<<< HEAD
   overflow: auto;
   max-height:300px;
 }
@@ -118,7 +117,6 @@ label {
   flex-direction: column;
   height: 100%;
   position: center;
-=======
   overflow-x: auto;
   max-height:100%;
 }
@@ -198,7 +196,6 @@ label {
 
 
 #pcard{
->>>>>>> 31c1cc73b30ce26f016847e192b87337f4eac8f0
   background: #fbfbfb;
   border-radius: 8px;
   box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.65);
