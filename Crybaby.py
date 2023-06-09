@@ -35,6 +35,5 @@ app.register_blueprint(user_bp)
 app.register_blueprint(edit_bp)
 app.register_blueprint(delete_bp)
 
-
 if __name__ == '__main__':
     app.run(debug=True)
