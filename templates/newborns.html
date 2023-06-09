@@ -2,31 +2,32 @@
 <html>
 <head>
     {% include 'links.html' %}
-	<a href="{{ url_for('newborns.newborns') }}"></a>
-
 </head>
 <body class="background">
     <div class="h-100 p-4">
+        {% include 'navbar.html' %}
         <div id="largecard">
             <p>
                 <div class="remark alert">
-                    <h3 >Newborns</h3>
+                    <h3>Newborns</h3>
                 </div>
-                    <form action="/newborns" method="POST">
-                        <label for="name" >Name:</label>
-                        <input type="text" id="name" name="name" class="form-content" required><br>
-                        <div class="form-group">
-                            <label for="birthdate">Birthdate:</label>
-                            <div class="input-wrapper">
-                                <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}">
-                            </div>
-                            <label for="gender">Gender:</label>
-                            <select id="gender" name="gender" class="form-content" required>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select><br>
-                            <input type="submit" value="Submit" id="submit-btn">                           
-                    </form>			
+                <form action="/newborns" method="POST">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" class="form-content" required><br>
+                    <div class="form-group">
+                        <label for="birthdate">Birthdate:</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}">
+                        </div>
+                    </div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" class="form-content" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select><br>
+                    <input type="submit" value="Submit" id="submit-btn">
+                </form>
+                <div class="table-container" style="overflow-y: auto; max-height: 300px;">
                     <table class="table" data-role="table">
                         <thead>
                             <tr>
@@ -52,15 +53,13 @@
                                     </form>
                                 </td>
                             </tr>
-                            {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </p>
-        </div>
+            </div>
+        </p>
     </div>
+</div>
 </body>
-{% include 'navbar.html' %}
-
 </html>
-      

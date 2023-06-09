@@ -8,39 +8,32 @@
 
     <title>Home</title>
 
+
+
+  
   </head>
 
   <body background="static/background.png">
-        <div class="h-100 p-4">
-            <div id="largecard">
-                <div id="card-content">
+    <div class="h-100 p-4">
+      {% include 'navbar.html' %}
+      <div id="largecard">
+        <div id="card-content">
 
-                   <div class="row flex-align-center h-50">
-                       <div class="img-container">
-                           <img src="static\crybaby.png" class="img-fluid">
-                       </div>
-                   </div>
-                   
-                    <div class="row flex-align-center h-50">
-                    
-                       <div class="cell-md-8 text-center text-bold">
-                           <p class="mt-4 mb-4 text-center text-bold">The revolutionary newborns cry classifier</p>
-                           <button class="button" id="collapse_toggle_1">About us</button>
-                            <div class="pos-relative">
-                                <div class="bg-red fg-white"
-                                 data-role="collapse"
-                                 data-collapsed="true"
-                                 data-toggle-element="#collapse_toggle_1">                        
-                                 <p class="p-10 text-center">
-                                 The app was created by Daniel Uralsky & Maxim Kobzer
-                                 </p>
-                                 </div>
-                             </div>
-                       </div>
-                   </div>
-               </div>
+          <div class="row flex-align-center h-50">
+            <img src="static/crybaby.png" alt="Crybaby Image">
+          </div>
+
+          <div class="row flex-align-center h-50">
+            <div class="cell-md-8 text-center text-bold">
+              <p class="mt-4 mb-4 text-center text-bold">The revolutionary newborns cry classifier</p>
+              {% include 'team.html' %}
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
   </body>
-  {% include 'navbar.html' %}
+
 </html>
