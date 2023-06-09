@@ -8,12 +8,15 @@
   <body class="background">
     <div class="h-100 p-4">
       <div id="largecard">
-        <select name="newborn_name">
+        <span>pick a baby:</span>
+          <select name="newborn_name">
+          <option value=""></option>
           {% for n in newborns %}
-          <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+            <option value="{{ n['name'] }}">{{ n['name'] }}</option>
           {% endfor %}
-        </select> 
-        <table class="table table-container">
+        </select>
+        <div class="table-container">
+        <table class="table-container table">
           <thead>
             <tr>
               <th data-sortable="true" data-sort-dir="asc">Recording Name</th>
@@ -25,26 +28,22 @@
             </thead>
           <tbody id="recording-table-body"></tbody>
         </table> 
+      </div>
         <script>
           const newbornDropdown = document.querySelector('[name=newborn_name]');
-          const recordingTableBody = document.getElementById('recording-table-body');        
-        
+          const recordingTableBody = document.getElementById('recording-table-body');                
           newbornDropdown.addEventListener('change', async (event) => {
-            const selectedNewbornName = event.target.value;       
-        
+            const selectedNewbornName = event.target.value;           
             // clear existing table rows
-            recordingTableBody.innerHTML = ''; 
-        
+            recordingTableBody.innerHTML = '';     
             // Fetch recordings for selected newborn
             try {
               const response = await fetch(`/api/recordings?newborn_name=${selectedNewbornName}`);
               if (!response.ok) {
                 throw new Error('Network response was not ok');
               }
-
               const data = await response.json();
               console.log(data);
-
               data.forEach((recording) => {
                 const tr = document.createElement('tr');
                 const tdRecordingName = document.createElement('td');
@@ -69,10 +68,8 @@
               });
             } catch(error) {
               console.error('There has been a problem with your fetch operation:', error);
-            }
-                      });
-        </script>
-        
+            }});
+        </script>        
       </div>
     </div>
   {% include 'navbar.html' %}

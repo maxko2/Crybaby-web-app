@@ -106,9 +106,9 @@ label {
   opacity: 1;
 }
 
-#table-container{
-  overflow-y: auto;
-  max-height:300px;
+.table-container{
+  overflow: auto;
+  max-height:100%;
 }
 
 #pcard{
