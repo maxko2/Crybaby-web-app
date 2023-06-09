@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, session, redirect, url_for, render_template, flash, request
 from services.predictionModels import predict
 from services.mongoDB import db
+import base64
+
 
 history_bp = Blueprint('history', __name__)
 
@@ -43,6 +45,9 @@ def history_post():
         return redirect(url_for('history.history'))
 
 
+
+
+
 @history_bp.route('/api/recordings', methods=['GET'])
 def get_recordings():
     newborn_name = request.args.get('newborn_name')
@@ -56,11 +61,59 @@ def get_recordings():
                 recording_data = {
                     'name': recording['name'],
                     'date': recording['date'],
-                    'prediction': recording['label']
+                    'prediction': recording['label'],
+                    'feedback': recording.get('feedback', '')  # Include the feedback in the response
                 }
+                file_data = recording['file']
+                if file_data:
+                    # Encode the file data as Base64 string
+                    file_base64 = base64.b64encode(file_data).decode('utf-8')
+                    recording_data['file'] = file_base64
+                
                 recordings_json.append(recording_data)
-            return jsonify(recordings_json)
+            
+            return jsonify(recordings_json), 200
         else:
             return jsonify({"error": "Newborn not found"}), 404
+    else:
+        return jsonify({"error": "User not found"}), 404
+
+
+    
+@history_bp.route('/api/recordings/<int:index>/feedback', methods=['POST'])
+def update_feedback(index):
+    feedback = request.form.get('feedback')
+    current_user = db.users.find_one({'username': session['username'], 'newborns.recordings': {'$exists': True}})
+    if current_user:
+        newborns = current_user['newborns']
+        for newborn in newborns:
+            recordings = newborn.get('recordings', [])
+            if index < len(recordings):
+                recording = recordings[index]
+                recording['feedback'] = feedback
+                db.users.update_one(
+                    {'username': session['username'], 'newborns.name': newborn['name']},
+                    {'$set': {'newborns.$.recordings': recordings}}
+                )
+                return jsonify({"success": True})
+        return jsonify({"error": "Recording not found"}), 404
+    else:
+        return jsonify({"error": "User not found"}), 404
+    
+@history_bp.route('/api/recordings/<int:index>', methods=['DELETE'])
+def delete_recording(index):
+    current_user = db.users.find_one({'username': session['username'], 'newborns.recordings': {'$exists': True}})
+    if current_user:
+        newborns = current_user['newborns']
+        for newborn in newborns:
+            recordings = newborn.get('recordings', [])
+            if index < len(recordings):
+                recordings.pop(index)
+                db.users.update_one(
+                    {'username': session['username'], 'newborns.name': newborn['name']},
+                    {'$set': {'newborns.$.recordings': recordings}}
+                )
+                return jsonify({"success": True})
+        return jsonify({"error": "Recording not found"}), 404
     else:
         return jsonify({"error": "User not found"}), 404

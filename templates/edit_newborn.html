@@ -6,31 +6,31 @@
   </head>
   
   <body background="static/background.png">
+    {% include 'navbar.html' %}
 
     <div class="h-100 p-4">
-      <div id="card">
-        <div id="card-content">
+      <p>
         <form action="{{ url_for('edit.edit_newborn', index=index) }}" method="POST">
-          <input type="hidden" name="_method" value="PUT">
-          <label for="name">Name:</label>
-          <input type="text" name="name" value="{{ newborn['name'] }}">
-          <div class="form-group">
-            <label for="birthdate">Birthdate:</label>
-            <div class="input-wrapper">
-              <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{ newborn['birthdate'] }}">
-            </div>
-          </div>
-          <label for="gender">Gender:</label>
-          <select id="gender" name="gender" class="form-content">
-            <option value="male" {% if newborn['gender'] == 'male' %}selected{% endif %}>Male</option>
-            <option value="female" {% if newborn['gender'] == 'female' %}selected{% endif %}>Female</option>
-          </select><br>
-          <button type="submit" class="button success small">Save</button>
-        </form>
-        </div>
-        </div>
-    </div>
+            <input type="hidden" name="_method" value="PUT">
+            <label for="name">Name:</label>
+            <input type="text" name="name" value="{{ newborn['name'] }}">
+            <div class="form-group">
+                <label for="birthdate">Birthdate:</label>
+                <div class="input-wrapper">
+                  <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{ newborn['birthdate'] }}">
 
-  </body>
-  {% include 'navbar.html' %}
+                </div>
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" class="form-content">
+          <option value="male" {% if newborn['gender'] == 'male' %}selected{% endif %}>Male</option>
+          <option value="female" {% if newborn['gender'] == 'female' %}selected{% endif %}>Female</option>
+      </select><br>
+            <button type="submit" class="button success small">Save</button>
+          </form>
+      </p>
+  </div>
+  </div>
+</body>
+{% include 'navbar.html' %}
+
 </html>

@@ -107,9 +107,83 @@ label {
 }
 
 .table-container{
-  overflow: auto;
+  overflow-x: auto;
   max-height:100%;
 }
+
+
+/* CSS */
+.button-container {
+  display: flex; /* Display the buttons in a row */
+  justify-content: space-between; /* Add space between the buttons */
+  width: 100%; /* Set the width to 100% of the container */
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Add this line to vertically align the buttons */
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-container button {
+  width: 48%;
+}
+
+.button-44 {
+  /* Add your button styles here */
+  background: #e62143;
+  border-radius: 11px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-family: Mija,-apple-system,BlinkMacSystemFont,Roboto,"Roboto Slab","Droid Serif","Segoe UI",system-ui,Arial,sans-serif;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 100%;
+  padding: .8em 1em;
+  text-align: center;
+  text-decoration: none;
+  text-decoration-skip-ink: auto;
+  text-shadow: rgba(0, 0, 0, .3) 1px 1px 1px;
+  text-underline-offset: 1px;
+  transition: all .2s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+  word-break: break-word;
+  border: 0;
+}
+
+.button-44:active,
+.button-44:focus {
+  border-bottom-style: none;
+  border-color: #dadada;
+  box-shadow: rgba(0, 0, 0, .3) 0 3px 3px inset;
+  outline: 0;
+}
+
+
+.stop-button {
+  background-color: red;
+}
+
+.play-button i:before {
+  content: "\f04b"; /* Play icon */
+}
+
+.stop-button i:before {
+  content: "\f04d"; /* Stop icon */
+}
+
 
 #pcard{
   background: #fbfbfb;
@@ -215,7 +289,6 @@ input[type="file"]:valid ~ #upload-button {
 }
 
 
-/* Color settings for notification divs */
 .notificationNote, .notificationTip, .notificationCase, .notificationWarning {
   display: inline-flex;
   align-items: center;
