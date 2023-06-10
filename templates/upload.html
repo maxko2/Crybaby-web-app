@@ -2,19 +2,29 @@
 <html>
 <head>
   {% include 'links.html' %}
-
   <a href="{{ url_for('upload.upload') }}"></a>
-
   <title>Upload</title>
   <style>
-    #upload-form {
+    .custom-notification {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      border-radius: 5px;
+      transform: translateX(-50%);
+      background-color: #e25d5d;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      box-shadow: 0px 2px 5px rgba(236, 230, 230, 0.2);
+      z-index: 9999;
+      font-size: 1.2rem;
+      font-weight: 600;
       display: flex;
-      flex-direction: column;
       align-items: center;
     }
 
-    #upload-button {
-      display: none;
+    .custom-notification .icon {
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -29,8 +39,8 @@
             <br>
             <div class="underline-title"></div>
           </div>
-          <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" data-role="file" data-mode="drop" onchange="showUploadButton()">
+          <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="return showNotification()">
+            <input type="file" name="file" data-role="file" data-mode="drop" onchange="onl()">
             <select name="newborn_name">
               {% for n in newborns %}
               <option value="{{ n['name'] }}">{{ n['name'] }}</option>
@@ -39,22 +49,47 @@
             <input type="text" name="recording_name" placeholder="Enter recording name">
             <br>
             <button type="submit" id="upload-button">Upload</button>
-          </form>   
-          {% if result is defined %}
-          <div>
-            <h3>Prediction Result:</h3>
-            <p>{{ result }}</p>
-          </div>
-          {% endif %}
+          </form>
         </p>
       </div>
     </div>
   </div>
   <script>
-    function showUploadButton() {
-      var uploadButton = document.getElementById("upload-button");
-      uploadButton.style.display = "inline";
+    function showNotification() {
+      var fileInput = document.querySelector('input[name="file"]');
+      var file = fileInput.files[0];
+      var fileType = file.type;
+      var validTypes = ['audio/wav'];
+
+      if (!validTypes.includes(fileType)) {
+        // Show custom notification for invalid file type
+        var notification = document.createElement('div');
+        notification.classList.add('custom-notification');
+
+        var icon = document.createElement('i');
+        icon.classList.add('fas', 'fa-exclamation-circle', 'icon');
+        notification.appendChild(icon);
+
+        var message = document.createElement('span');
+        message.textContent = 'Only WAV files are allowed!';
+        notification.appendChild(message);
+
+        document.body.appendChild(notification);
+
+        setTimeout(function () {
+          notification.remove();
+        }, 3000);
+
+        return false;
+      }
+
+      return true;
     }
-  </script>       
+
+    function onl() {
+      var uploadButton = document.getElementById('upload-button');
+      uploadButton.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
