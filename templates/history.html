@@ -45,6 +45,8 @@
         <script>
           const newbornDropdown = document.querySelector('[name=newborn_name]');
           const recordingTableBody = document.getElementById('recording-table-body');
+          const recordingInstances = []; // Array to store recording instances
+
           newbornDropdown.addEventListener('change', async (event) => {
             const selectedNewbornName = event.target.value;
             // clear existing table rows
@@ -66,28 +68,37 @@
                 const tdPrediction = document.createElement('td');
                 tdPrediction.textContent = recording.prediction;
                 const tdFile = document.createElement('td');
+
                 const playButton = document.createElement('button');
-                playButton.textContent = 'Play';
-                playButton.classList.add('button-44');
-                playButton.style.backgroundColor = 'blue';
+                const playIcon = document.createElement('span');
+                playIcon.classList.add('mif-play'); // Play icon from Metro UI
+                const stopIcon = document.createElement('span');
+                stopIcon.classList.add('mif-stop'); // Square icon from Metro UI
+                playButton.appendChild(playIcon);
                 playButton.addEventListener('click', () => {
-                  playRecording(recording.file);
+                  const isPlaying = playButton.contains(stopIcon);
+                  if (isPlaying) {
+                    playButton.replaceChild(playIcon, stopIcon);
+                    stopRecording(index);
+                  } else {
+                    playButton.replaceChild(stopIcon, playIcon);
+                    playRecording(recording.file, index);
+                  }
                 });
                 tdFile.appendChild(playButton);
+
+
                 const tdFeedback = document.createElement('td');
                 const buttonContainer = document.createElement('div'); // Create a container for buttons
                 buttonContainer.classList.add('button-container'); // Add the button container class
 
                 const feedbackButtonV = document.createElement('button');
-                feedbackButtonV.textContent = 'V';
-                feedbackButtonV.classList.add('button-44');
-                feedbackButtonV.style.backgroundColor = 'green';
+                feedbackButtonV.classList.add('button', 'success'); // Use the "success" class from Metro UI
+                feedbackButtonV.classList.add('mif-thumbs-up'); // Use the "success" class from Metro UI
 
                 const feedbackButtonX = document.createElement('button');
-                feedbackButtonX.textContent = 'X';
-                feedbackButtonX.classList.add('button-44');
-                feedbackButtonX.style.backgroundColor = 'red';
-
+                feedbackButtonX.classList.add('button', 'alert'); // Use the "alert" class from Metro UI
+                feedbackButtonX.classList.add('mif-thumbs-down'); // Use the "success" class from Metro UI
                 buttonContainer.appendChild(feedbackButtonV); // Add the buttons to the container
                 buttonContainer.appendChild(feedbackButtonX);
 
@@ -100,10 +111,9 @@
 
                 const tdDelete = document.createElement('td');
                 const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
-                deleteButton.classList.add('button-44');
-                deleteButton.style.color = 'red';
-                deleteButton.style.backgroundColor = 'white';
+                deleteButton.classList.add('button', 'dark');
+                deleteButton.classList.add('mif-bin');
+
                 deleteButton.addEventListener('click', () => {
                   deleteRecording(index);
                   tr.remove(); // Remove the row from the table
@@ -166,7 +176,10 @@
                     });
                 }
 
-                function playRecording(file) {
+                function playRecording(file, index) {
+                  // Stop any active recordings
+                  stopAllRecordings();
+                  
                   // Convert the BinData to a Blob
                   const binData = atob(file);
                   const buffer = new ArrayBuffer(binData.length);
@@ -186,6 +199,26 @@
                   const audioContainer = document.getElementById('audio-container');
                   audioContainer.innerHTML = '';
                   audioContainer.appendChild(audio);
+
+                  // Store the recording instance
+                  recordingInstances[index] = audio;
+                }
+
+                function stopRecording(index) {
+                  if (recordingInstances[index]) {
+                    const audio = recordingInstances[index];
+                    audio.pause();
+                    audio.currentTime = 0;
+                  }
+                }
+
+                function stopAllRecordings() {
+                  recordingInstances.forEach((audio) => {
+                    if (audio) {
+                      audio.pause();
+                      audio.currentTime = 0;
+                    }
+                  });
                 }
               });
             } catch (error) {
@@ -195,10 +228,6 @@
         </script>
       </div>
     </div>
-<<<<<<< HEAD
-=======
     <div id="audio-container"></div> <!-- Container for playing audio -->
-    {% include 'navbar.html' %}
->>>>>>> 31c1cc73b30ce26f016847e192b87337f4eac8f0
   </body>
 </html>
