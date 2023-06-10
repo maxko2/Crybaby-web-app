@@ -4,11 +4,29 @@
     <title>Team Showcase</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <style>
+        .quote-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .quote {
+            font-family: 'Indie Flower', cursive;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-md-4 col-sm-6">
+    <div class="row justify-content-center">
+        <div style="width: 15%;">
             <div class="our-team">
                 <div class="pic">
                     <img src="\static\daniel.png" alt="team member" class="img-responsive">
@@ -23,7 +41,24 @@
             </div>
         </div>
 
-       <div class="col-md-4 col-sm-6">
+        <div style="width: 50%;">
+            <div class="quote-container">
+                <div class="quote">
+                    "Children are the world's most valuable resource and its best hope for the future." - John F. Kennedy
+                </div>
+
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="baby-container">
+                {% include 'baby.html' %}
+            </div>
+        </div>
+        
+        <div style="width: 15%;">
             <div class="our-team">
                 <div class="pic">
                     <img src="\static\max.png" alt="team member" class="img-responsive">

@@ -5,7 +5,6 @@
     <title>Edit newborn</title>
   </head>
   <body background="static/background.png">
-<<<<<<< HEAD
     <div class="h-100 p-4">
       {% include 'navbar.html' %}
       <div id="card2">
@@ -48,33 +47,4 @@
         </div>
     </div>
   </body>
-=======
-    {% include 'navbar.html' %}
-
-    <div class="h-100 p-4">
-      <p>
-        <form action="{{ url_for('edit.edit_newborn', index=index) }}" method="POST">
-            <input type="hidden" name="_method" value="PUT">
-            <label for="name">Name:</label>
-            <input type="text" name="name" value="{{ newborn['name'] }}">
-            <div class="form-group">
-                <label for="birthdate">Birthdate:</label>
-                <div class="input-wrapper">
-                  <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{ newborn['birthdate'] }}">
-
-                </div>
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" class="form-content">
-          <option value="male" {% if newborn['gender'] == 'male' %}selected{% endif %}>Male</option>
-          <option value="female" {% if newborn['gender'] == 'female' %}selected{% endif %}>Female</option>
-      </select><br>
-            <button type="submit" class="button success small">Save</button>
-          </form>
-      </p>
-  </div>
-  </div>
-</body>
-{% include 'navbar.html' %}
-
->>>>>>> 31c1cc73b30ce26f016847e192b87337f4eac8f0
 </html>

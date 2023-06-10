@@ -13,7 +13,7 @@
   
   </head>
 
-  <body background="static/background.png">
+  <body class="background">
     <div class="h-100 p-4">
       {% include 'navbar.html' %}
       <div id="largecard">
@@ -24,16 +24,25 @@
           </div>
 
           <div class="row flex-align-center h-50">
-            <div class="cell-md-8 text-center text-bold">
-              <p class="mt-4 mb-4 text-center text-bold">The revolutionary newborns cry classifier</p>
+              <div id="card-content">
+                <div id="card-title">
+                  <h2>Meet our team</h2>
+                  <br>
+                  <div class="underline-title"></div>
+                </div>
               {% include 'team.html' %}
                 </div>
+                <br>
               </div>
-            </div>
           </div>
+          <br>
+          <br>
+          <button onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSfM5mMVRy-bivNeNYGg86uDN99_9BXzGymT7FLB9IMD47-b8Q/viewform'" type="button" id="submit-btn">Leave us feedback</button>
+
         </div>
       </div>
     </div>
+    
   </body>
 
 </html>
