@@ -6,15 +6,28 @@
   <a href="{{ url_for('upload.upload') }}"></a>
 
   <title>Upload</title>
+  <style>
+    #upload-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #upload-button {
+      display: none;
+    }
+  </style>
 </head>
 <body class="background">
   <div class="h-100 p-4">
     {% include 'navbar.html' %}
-    <div  id="largecard">
+    <div id="largecard">
       <div id="upload-form">
         <p>
-          <div class="remark alert">
-            <h3>Upload a recording</h3>
+          <div id="card-title">
+            <h2>Upload a recording</h2>
+            <br>
+            <div class="underline-title"></div>
           </div>
           <form action="/upload" method="post" enctype="multipart/form-data">
             <input type="file" name="file" data-role="file" data-mode="drop" onchange="showUploadButton()">
@@ -24,6 +37,7 @@
               {% endfor %}
             </select>
             <input type="text" name="recording_name" placeholder="Enter recording name">
+            <br>
             <button type="submit" id="upload-button">Upload</button>
           </form>   
           {% if result is defined %}
@@ -34,14 +48,13 @@
           {% endif %}
         </p>
       </div>
-      </div>
     </div>
+  </div>
   <script>
-  function showUploadButton() {
-    var uploadButton = document.getElementById("upload-button");
-    uploadButton.style.display = "inline";
-  }
+    function showUploadButton() {
+      var uploadButton = document.getElementById("upload-button");
+      uploadButton.style.display = "inline";
+    }
   </script>       
 </body>
-
 </html>
