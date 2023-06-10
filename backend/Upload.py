@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, session, redirect, url_for, render_template, flash
 from services.predictionModels import predict
 from services.mongoDB import db
+from pydub import AudioSegment
 
 upload_bp = Blueprint('upload', __name__)
 
@@ -23,6 +24,18 @@ def upload():
         if file is None:
             # Return an error message if the file is not in the request
             return 'No file uploaded', 400
+
+        # Check file extension
+        if not file.filename.endswith('.wav'):
+            return 'Only WAV files are allowed', 400
+
+        # Load audio file using pydub
+        audio = AudioSegment.from_file(file)
+
+        # Check audio duration
+        duration = len(audio) / 1000  # Duration in seconds
+        if duration > 15:
+            return 'Audio file should be less than 15 seconds', 400
 
         # Get the selected newborn's name from the form
         selected_newborn_name = request.form['newborn_name']

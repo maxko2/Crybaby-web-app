@@ -2,22 +2,10 @@ body {
     background: #f0f0f0;
   }
   
-  #wrap {
-    margin: -200px 0 0 -250px;
-    width: 500px;
-    height: 400px;
-    background: #86b1c2;
-    border: 20px solid #FFF;
-    box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-  }
-  
   .baby {
     margin: -112px 0 0 -43px;
     width: 86px;
-    height: 180px;
+    height: 130px;
     background: #e8dcd8;
     border-radius: 43px;
     box-shadow: -15px -10px 0px #ff4141;
@@ -88,7 +76,7 @@ body {
   
   .baby .face .mouth {
     margin-left: -16px;
-    width: 32px;
+    width: 25px;
     height: 18px;
     background: #7e2e33;
     border-radius: 10px;
@@ -121,8 +109,8 @@ body {
     transform: rotate(-30deg);
     -webkit-transform: rotate(-30deg);
     position: absolute;
-    top: 45%;
-    left: -30px;
+    top: 35%;
+    left: -10px;
     animation: blanket 1.2s ease-in-out infinite;
     -webkit-animation: blanket 1.2s ease-in-out infinite;
   }
@@ -207,7 +195,7 @@ body {
   }
   
   .pacifier {
-    margin: 80px 0 0 -90px;
+    margin: 18px 0 0 -90px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -276,7 +264,7 @@ body {
   }
   
   .pacifier.shadow {
-    margin: 83px 0 0 -95px;
+    margin: 23px 0 0 -95px;
     position: absolute;
     top: 50%;
     left: 50%;
