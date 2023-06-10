@@ -8,31 +8,41 @@
 <body class="background">
   <div class="h-100 p-4">
     {% include 'navbar.html' %}
-    <div id="largecard">
-      <div id="record-form">
-        <p>
-          <div class="remark alert">
-            <h3>Make a new recording</h3>
+    <div id="medCard">
+      <div id="card-content">
+      <div class="recForm">
+          <div id="card-title">
+            <h2>Make a new recording</h2>
+          </div>
             <!-- HTML form for recording audio -->
             <form action="/record" method="post" enctype="multipart/form-data">
-              <button id="startRecording">Start recording</button>
-              <button id="stopRecording" disabled>Stop recording</button>
+               <button id="startRecording" onclick="toggleRecording()"><i class="fa fa-microphone"></i></button>
+              <button id="stopRecording" disabled><i class="fa fa-stop"></i></button>
+              <br>
+              <label for="newborn-name" style="padding-top:13px; font-weight: bold;">&nbsp;Pick a newborn</label>
+              <br>
               <select name="newborn_name">
                 {% for n in newborns %}
                 <option value="{{ n['name'] }}">{{ n['name'] }}</option>
                 {% endfor %}
               </select>
-              <input type="text" name="recording_name" placeholder="Enter recording name">
-            </form>
-            {% if result is defined %}
-              <div id="prediction-result">
+              <br>
+              <br>
+              <label for="recording_name" style="padding-top:13px; font-weight: bold;">&nbsp;Name your recording</label>
+              <br>
+              <input id="recording_name" class="form-content" type="text"  autocomplete="on" required />
+              <div class="form-border"></div>
+              </form>
+              <div id="prediction-result"></div>
+              {% if result is defined %}
+              <div>
                 <h3>Prediction Result:</h3>
                 <p><strong>The prediction is:</strong> {{ result }}</p>
               </div>
-            {% endif %}
+              {% endif %}
           </div>
-        </p> 
       </div>
+    </div>
     </div>
   </div>
   <script>
