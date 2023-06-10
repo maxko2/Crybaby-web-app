@@ -4,90 +4,89 @@
   {% include 'links.html' %}
   <a href="{{ url_for('record.record') }}"></a>
   <title>Record</title>
-
 </head>
 <body class="background">
-    <div class="h-100 p-4">
-      {% include 'navbar.html' %}
-      <div  id="largecard">
-          <div id="record-form">
-          <p>
+  <div class="h-100 p-4">
+    {% include 'navbar.html' %}
+    <div id="largecard">
+      <div id="record-form">
+        <p>
           <div class="remark alert">
             <h3>Make a new recording</h3>
-              <!-- HTML form for recording audio -->
-                <form action="/record"  method="post" enctype="multipart/form-data">
-                <button id="startRecording">Start recording</button>
-                <button id="stopRecording" disabled>Stop recording</button>
-
-                <select name="newborn_name">
-                  {% for n in newborns %}
-                  <option value="{{ n['name'] }}">{{ n['name'] }}</option>
-                  {% endfor %}
-                </select>
-                <input type="text" name="recording_name" placeholder="Enter recording name">
-               </form>
-               {% if result is defined %}
-               <div>
-                 <h3>Prediction Result:</h3>
-                 <p>{{ result }}</p>
-               </div>
-             {% endif %}
-             </p>
-  
+            <!-- HTML form for recording audio -->
+            <form action="/record" method="post" enctype="multipart/form-data">
+              <button id="startRecording">Start recording</button>
+              <button id="stopRecording" disabled>Stop recording</button>
+              <select name="newborn_name">
+                {% for n in newborns %}
+                <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+                {% endfor %}
+              </select>
+              <input type="text" name="recording_name" placeholder="Enter recording name">
+            </form>
+            {% if result is defined %}
+              <div id="prediction-result">
+                <h3>Prediction Result:</h3>
+                <p><strong>The prediction is:</strong> {{ result }}</p>
+              </div>
+            {% endif %}
           </div>
+        </p> 
       </div>
-      </div>
-      <script>
-        navigator
-            .mediaDevices
-            .getUserMedia({audio: true})
-            .then(stream => { handlerFunction(stream) });
+    </div>
+  </div>
+  <script>
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => { handlerFunction(stream) });
 
-        function handlerFunction(stream) {
-            rec = new MediaRecorder(stream);
-            rec.ondataavailable = e => {
-                audioChunks.push(e.data);
-                if (rec.state == "inactive") {
-                  let blob = new Blob(audioChunks);
-                    sendData(blob);
-
-                }
-            }
+    function handlerFunction(stream) {
+      rec = new MediaRecorder(stream);
+      rec.ondataavailable = e => {
+        audioChunks.push(e.data);
+        if (rec.state == "inactive") {
+          let blob = new Blob(audioChunks);
+          sendData(blob);
         }
+      }
+    }
 
-        function sendData(data) {
-          const form = new FormData(document.querySelector('form'));
-          const newbornName = document.querySelector('select[name="newborn_name"]').value;
-          const recordingName = document.querySelector('input[name="recording_name"]').value;
-          form.append('newborn_name', newbornName);
-          form.append('recording_name', recordingName);
-          form.append('file', data, 'data');
-          fetch('/record', { method: 'POST', body: form })
-            .then(response => {
-              console.log(response);
-            });
-        }
+    function sendData(data) {
+      const form = new FormData(document.querySelector('form'));
+      const newbornName = document.querySelector('select[name="newborn_name"]').value;
+      const recordingName = document.querySelector('input[name="recording_name"]').value;
+      form.append('newborn_name', newbornName);
+      form.append('recording_name', recordingName);
+      form.append('file', data, 'data');
+      fetch('/record', { method: 'POST', body: form })
+        .then(response => response.text())
+        .then(result => {
+          document.getElementById('prediction-result').textContent = result;
+          console.log(result);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
 
-           let recTimeout;
+    let recTimeout;
+    startRecording.onclick = e => {
+      console.log('Recording has started..');
+      startRecording.disabled = true;
+      stopRecording.disabled = false;
+      audioChunks = [];
+      rec.start();
+      recTimeout = setTimeout(() => {
+        stopRecording.click();
+      }, 7500);
+    };
 
-            startRecording.onclick = e => {
-            console.log('Recording has started..');
-            startRecording.disabled = true;
-            stopRecording.disabled = false;
-            audioChunks = [];
-            rec.start();
-            recTimeout = setTimeout(() => {
-            stopRecording.click();
-                  }, 7500);
-              };
-
-              stopRecording.onclick = e => {
-              console.log("Recording has stopped.");
-              startRecording.disabled = false;
-              stopRecording.disabled = true;
-              rec.stop();
-                  clearTimeout(recTimeout);
-              };                                                       
-      </script>
-  </body>
+    stopRecording.onclick = e => {
+      console.log("Recording has stopped.");
+      startRecording.disabled = false;
+      stopRecording.disabled = true;
+      rec.stop();
+      clearTimeout(recTimeout);
+    };                                                       
+  </script>
+</body>
 </html>
