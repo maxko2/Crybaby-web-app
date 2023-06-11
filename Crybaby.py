@@ -1,4 +1,5 @@
 from flask import Flask
+import os
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 from backend.Login import login_bp
@@ -23,6 +24,8 @@ app.secret_key = 'mysecretkey'
 app.config['MONGO_URI'] = 'mongodb+srv://Crybaby:XtQUCMWF1HcKVjN9@cluster0.hleztpr.mongodb.net/'
 app.config['mongo'] = PyMongo(app)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16mb file max
+env_config = os.getenv("PROD_APP_SETTINGS", "config.DevelopmentConfig")
+app.config.from_object(env_config)  
 app.register_blueprint(login_bp, url_prefix='/')
 app.register_blueprint(logout_bp)
 app.register_blueprint(home_bp)
@@ -36,4 +39,4 @@ app.register_blueprint(edit_bp)
 app.register_blueprint(delete_bp)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(debug=True)
