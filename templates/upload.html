@@ -4,29 +4,6 @@
   {% include 'links.html' %}
   <a href="{{ url_for('upload.upload') }}"></a>
   <title>Upload</title>
-  <style>
-    .custom-notification {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      border-radius: 5px;
-      transform: translateX(-50%);
-      background-color: #e25d5d;
-      color: #ffffff;
-      padding: 10px 20px;
-      border-radius: 4px;
-      box-shadow: 0px 2px 5px rgba(236, 230, 230, 0.2);
-      z-index: 9999;
-      font-size: 1.2rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-    }
-
-    .custom-notification .icon {
-      margin-right: 10px;
-    }
-  </style>
 </head>
 <body class="background">
   <div class="h-100 p-4">
@@ -40,7 +17,7 @@
             <div class="underline-title"></div>
           </div>
           <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="return showNotification()">
-            <input type="file" name="file" data-role="file" data-mode="drop" onchange="onl()">
+            <input type="file" name="file" data-role="file" data-mode="drop" onchange="onFileInputChange(event)">
             <select name="newborn_name">
               {% for n in newborns %}
               <option value="{{ n['name'] }}">{{ n['name'] }}</option>
@@ -55,35 +32,47 @@
     </div>
   </div>
   <script>
-    function showNotification() {
-      var fileInput = document.querySelector('input[name="file"]');
+    function showNotification(message) {
+      var notification = document.createElement('div');
+      notification.classList.add('custom-notification');
+
+      var icon = document.createElement('i');
+      icon.classList.add('fas', 'fa-exclamation-circle', 'icon');
+      notification.appendChild(icon);
+
+      var messageElement = document.createElement('span');
+      messageElement.textContent = message;
+      notification.appendChild(messageElement);
+
+      document.body.appendChild(notification);
+
+      setTimeout(function () {
+        notification.remove();
+      }, 3000);
+    }
+
+    function onFileInputChange(event) {
+      var fileInput = event.target;
       var file = fileInput.files[0];
       var fileType = file.type;
       var validTypes = ['audio/wav'];
 
       if (!validTypes.includes(fileType)) {
         // Show custom notification for invalid file type
-        var notification = document.createElement('div');
-        notification.classList.add('custom-notification');
-
-        var icon = document.createElement('i');
-        icon.classList.add('fas', 'fa-exclamation-circle', 'icon');
-        notification.appendChild(icon);
-
-        var message = document.createElement('span');
-        message.textContent = 'Only WAV files are allowed!';
-        notification.appendChild(message);
-
-        document.body.appendChild(notification);
-
-        setTimeout(function () {
-          notification.remove();
-        }, 3000);
-
-        return false;
+        showNotification('Only WAV files are allowed!');
+        fileInput.value = null; // Clear the file input
+        return;
       }
 
-      return true;
+      var fileSizeInBytes = file.size;
+      var maxSizeInBytes = 2048 * 1024; // 1MB
+
+      if (fileSizeInBytes > maxSizeInBytes) {
+        // Show custom notification for exceeding file size limit
+        showNotification('You exceeded the file size limit!');
+        fileInput.value = null; // Clear the file input
+        return;
+      }
     }
 
     function onl() {

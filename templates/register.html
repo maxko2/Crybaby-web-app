@@ -3,27 +3,25 @@
 <head>
   {% include 'links.html' %}
 
-    <title>Register</title>
-    <a href="{{ url_for('register.register') }}"></a>
-
+  <title>Register</title>
 </head>
 <body background="static/background.png">
-    <div id="card2">
-        <div id="card-content">
-          <div id="card-title">
-            <h2>Register</h2>
-            <div class="underline-title"></div>
-          </div>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="notificationWarning">
-            <i class="fas fa-circle-info icon"></i>
-            <p style="font-size:0.8rem; text-align: center;"><b>Account already registered!</b></p>
-        </div>
-        {% endif %}
-    {% endwith %}
-    <form method="post" class="form" action="/register">
-        <label for="username" style="padding-top:13px; font-weight: bold;">&nbsp;Username</label>
+  <div id="card2">
+    <div id="card-content">
+      <div id="card-title">
+        <h2>Register</h2>
+        <div class="underline-title"></div>
+      </div>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div id="notification" class="custom-notification">
+        <i class="fas fa-exclamation-circle icon"></i>
+        <p><b>Account already registered!</b></p>
+      </div>
+      {% endif %}
+      {% endwith %}
+      <form method="post" class="form" action="/register">
+        <label for="username" style="padding-top:22px; font-weight: bold;">&nbsp;Username</label>
         <input id="username" class="form-content" type="text" name="username" autocomplete="on" required />
         <div class="form-border"></div>
         <label for="password" style="padding-top:22px; font-weight: bold;">&nbsp;Password</label>
@@ -34,11 +32,17 @@
         <div class="form-border"></div>
         <input id="submit-btn" type="submit" name="submit" value="Register" />
       </form>
-
-      
     </div>
   </div>
-
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var notification = document.getElementById('notification');
+      if (notification) {
+        setTimeout(function () {
+          notification.remove();
+        }, 3000);
+      }
+    });
+  </script>
 </body>
 </html>
-
