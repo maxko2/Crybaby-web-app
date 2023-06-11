@@ -55,4 +55,5 @@ def record():
         db.users.update_one(
             {"username": session['username'], "newborns.name": selected_newborn_name},
             {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": res}}})
+        file.close()
         return result  # Return the prediction result as the response

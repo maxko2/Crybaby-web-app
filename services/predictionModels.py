@@ -13,6 +13,10 @@ from keras.models import  load_model
 from PIL import Image
 from pymongo import MongoClient
 from werkzeug.datastructures import FileStorage
+import requests
+import gdown
+import tensorflow as tf
+
 
 
 def predict(file=None):
@@ -23,6 +27,19 @@ def predict(file=None):
     # Set the sample rate and duration
     sr = 22050
     duration = 7
+
+
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # Enable memory growth for all available GPUs
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+            print('Memory growth enabled')
+        except RuntimeError as e:
+            print(e)
+
+
 
     # Calculate the number of samples needed to reach the desired duration
     desired_samples = int(duration * sr)
@@ -94,8 +111,16 @@ def predict(file=None):
             images.append(img_array)
 
 
-        # Load the model
+
+       
+
+        
+                # Load the model
         model = load_model("model1.h5")
+       
+       
+       
+       
         model.summary()
 
         # Convert the list of images to a batch of images
