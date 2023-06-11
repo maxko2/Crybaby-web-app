@@ -76,7 +76,7 @@ label {
   width: 1000px;
   opacity: 1;
   z-index: 1; 
-  padding: 50px;
+  padding: 25px;
   border: 2px solid darksalmon;
 
 
@@ -90,7 +90,6 @@ label {
   width: 329px;
   position: relative;
   opacity: 1;
-  border: 2px solid darksalmon;
 }
 
 #medCard{
@@ -414,9 +413,6 @@ h3 {
 
 }
 
-#upload-button {
-  display: none;
-}
 
 .custom-notification {
   position: fixed;
@@ -436,5 +432,5 @@ h3 {
   align-items: center; 
 }
 .custom-notification .notification-icon {
-  margin-right: 15px;
+  margin-right: 5px;
 }

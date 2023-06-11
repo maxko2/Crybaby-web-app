@@ -9,9 +9,6 @@
     <div class="h-100 p-4">
       {% include 'navbar.html' %}
       <div id="largecard">
-        <div id="card-title">
-          <h2>History</h2>
-          <div class="underline-title"></div>
         <span>pick a newborn:</span>
         <select name="newborn_name" id="newborn-select">
           <option value="" disabled selected hidden></option>
@@ -49,6 +46,7 @@
           const newbornDropdown = document.querySelector('[name=newborn_name]');
           const recordingTableBody = document.getElementById('recording-table-body');
           const recordingInstances = []; // Array to store recording instances
+          let previousPlayButton = null; // Reference to the previously playing button
 
           newbornDropdown.addEventListener('change', async (event) => {
             const selectedNewbornName = event.target.value;
@@ -73,6 +71,7 @@
                 const tdFile = document.createElement('td');
 
                 const playButton = document.createElement('button');
+                playButton.id = `play-button-${index}`;
                 const playIcon = document.createElement('span');
                 playIcon.classList.add('mif-play'); // Play icon from Metro UI
                 const stopIcon = document.createElement('span');
@@ -84,12 +83,20 @@
                     playButton.replaceChild(playIcon, stopIcon);
                     stopRecording(index);
                   } else {
-                    playButton.replaceChild(stopIcon, playIcon);
+                    // Change the icon of the previously playing button to play icon
+                    if (previousPlayButton && previousPlayButton !== playButton) {
+                      const previousPlayIcon = document.createElement('span');
+                      previousPlayIcon.classList.add('mif-play');
+                      previousPlayButton.innerHTML = '';
+                      previousPlayButton.appendChild(previousPlayIcon);
+                    }
+                    playButton.innerHTML = '';
+                    playButton.appendChild(stopIcon);
+                    previousPlayButton = playButton; // Update the reference to the current playing button
                     playRecording(recording.file, index);
                   }
                 });
                 tdFile.appendChild(playButton);
-
 
                 const tdFeedback = document.createElement('td');
                 const buttonContainer = document.createElement('div'); // Create a container for buttons
@@ -182,7 +189,7 @@
                 function playRecording(file, index) {
                   // Stop any active recordings
                   stopAllRecordings();
-                  
+
                   // Convert the BinData to a Blob
                   const binData = atob(file);
                   const buffer = new ArrayBuffer(binData.length);
@@ -192,19 +199,38 @@
                   }
                   const blob = new Blob([view], { type: 'audio/wav' });
 
-                  // Create an audio element and set the source to the Blob URL
-                  const audio = new Audio();
-                  audio.src = URL.createObjectURL(blob);
-                  audio.controls = true;
-                  audio.autoplay = true;
+                  // Create a new audio element if it doesn't exist for the recording
+                  if (!recordingInstances[index]) {
+                    recordingInstances[index] = new Audio();
+                    recordingInstances[index].controls = true;
+                    recordingInstances[index].autoplay = true;
+                  }
+
+                  // Set the source of the audio element to the Blob URL
+                  recordingInstances[index].src = URL.createObjectURL(blob);
 
                   // Append the audio element to the page
                   const audioContainer = document.getElementById('audio-container');
                   audioContainer.innerHTML = '';
-                  audioContainer.appendChild(audio);
+                  audioContainer.appendChild(recordingInstances[index]);
 
-                  // Store the recording instance
-                  recordingInstances[index] = audio;
+                  // Add an event listener to change the button back to the play icon when the audio ends
+                  recordingInstances[index].addEventListener('ended', () => {
+                    const playButton = document.getElementById(`play-button-${index}`);
+                    const playIcon = document.createElement('span');
+                    playIcon.classList.add('mif-play');
+                    playButton.innerHTML = '';
+                    playButton.appendChild(playIcon);
+
+                    // Remove the audio element from the page
+                    audioContainer.innerHTML = '';
+
+                    // Reset the audio source
+                    recordingInstances[index].src = '';
+
+                    // Reset the recording instance
+                    recordingInstances[index] = null;
+                  });
                 }
 
                 function stopRecording(index) {
