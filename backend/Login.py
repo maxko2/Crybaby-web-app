@@ -13,8 +13,8 @@ def login():
         username = request.form['username']
         password = request.form['password']
         # Perform authentication logic here by querying MongoDB
-        users = login_bp.mongo.db.users
-        user = users.find_one({'username': username, 'password': password})
+        user = users_collection.find_one({'username': username, 'password': password})
+
         if user:
             users_collection.update_one({'username': username}, {'$set': {'loggedin': True}})
             session['logged_in'] = True
