@@ -20,7 +20,7 @@ CORS(app, origins=['http://127.0.0.1:5000'])
 app.secret_key = 'mysecretkey'
 
 ## Configuration for MongoDB
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/Crybaby'
+app.config['MONGO_URI'] = 'mongodb+srv://Crybaby:XtQUCMWF1HcKVjN9@cluster0.hleztpr.mongodb.net/'
 app.config['mongo'] = PyMongo(app)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16mb file max
 app.register_blueprint(login_bp, url_prefix='/')
@@ -36,4 +36,4 @@ app.register_blueprint(edit_bp)
 app.register_blueprint(delete_bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host="0.0.0.0")
