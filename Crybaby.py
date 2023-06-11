@@ -22,7 +22,7 @@ app.secret_key = 'mysecretkey'
 ## Configuration for MongoDB
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/Crybaby'
 app.config['mongo'] = PyMongo(app)
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2mb file max
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16mb file max
 app.register_blueprint(login_bp, url_prefix='/')
 app.register_blueprint(logout_bp)
 app.register_blueprint(home_bp)

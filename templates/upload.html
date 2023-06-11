@@ -16,7 +16,7 @@
             <br>
             <div class="underline-title"></div>
           </div>
-          <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="return showNotification()">
+          <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <input type="file" name="file" data-role="file" data-mode="drop" onchange="onFileInputChange(event)">
             <select name="newborn_name">
               {% for n in newborns %}
@@ -25,8 +25,18 @@
             </select>
             <input type="text" name="recording_name" placeholder="Enter recording name">
             <br>
-            <button type="submit" id="upload-button">Upload</button>
+            <button type="submit" id="upload-button" style="display: none;">Upload</button>
           </form>
+          {% if result is defined %}
+          <div>
+            <div id="card-title">
+              <h2>Prediction result</h2>
+              <br>
+              <div class="underline-title"></div>
+            </div>
+            <h2>{{result}}</h2>
+          </div>
+          {% endif %}
         </p>
       </div>
     </div>
@@ -61,6 +71,7 @@
         // Show custom notification for invalid file type
         showNotification('Only WAV files are allowed!');
         fileInput.value = null; // Clear the file input
+        document.getElementById('upload-button').style.display = 'none'; // Hide the upload button
         return;
       }
 
@@ -71,13 +82,38 @@
         // Show custom notification for exceeding file size limit
         showNotification('You exceeded the file size limit!');
         fileInput.value = null; // Clear the file input
+        document.getElementById('upload-button').style.display = 'none'; // Hide the upload button
         return;
       }
+
+      document.getElementById('upload-button').style.display = 'block'; // Show the upload button
     }
 
-    function onl() {
-      var uploadButton = document.getElementById('upload-button');
-      uploadButton.style.display = 'block';
+    function validateForm() {
+      var fileInput = document.querySelector('input[name="file"]');
+      if (fileInput.files.length === 0) {
+        showNotification('Please select a file!');
+        return false; // Prevent form submission if no file is selected
+      }
+      return true;
+    }
+
+    function sendData(data) {
+      const form = new FormData(document.querySelector('form'));
+      const newbornName = document.querySelector('select[name="newborn_name"]').value;
+      const recordingName = document.querySelector('input[name="recording_name"]').value;
+      form.append('newborn_name', newbornName);
+      form.append('recording_name', recordingName);
+      form.append('file', data, 'data');
+      fetch('/upload', { method: 'POST', body: form })
+        .then(response => response.text())
+        .then(result => {
+          document.getElementById('prediction-result').textContent = result;
+          console.log(result);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     }
   </script>
 </body>

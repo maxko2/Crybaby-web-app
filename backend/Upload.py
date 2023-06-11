@@ -1,8 +1,7 @@
 from datetime import datetime
-from flask import Blueprint, request, session, redirect, url_for, render_template, flash
+from flask import Blueprint, request, session, redirect, url_for, render_template
 from services.predictionModels import predict
 from services.mongoDB import db
-from pydub import AudioSegment
 
 upload_bp = Blueprint('upload', __name__)
 
@@ -25,33 +24,20 @@ def upload():
             # Return an error message if the file is not in the request
             return 'No file uploaded', 400
 
-        # Check file extension
-        if not file.filename.endswith('.wav'):
-            return 'Only WAV files are allowed', 400
-
-        # Load audio file using pydub
-        audio = AudioSegment.from_file(file)
-
-        # Check audio duration
-        duration = len(audio) / 1000  # Duration in seconds
-        if duration > 15:
-            return 'Audio file should be less than 15 seconds', 400
-
         # Get the selected newborn's name from the form
         selected_newborn_name = request.form['newborn_name']
         # Set the filename from the form
         filename = request.form['recording_name']
 
         # Call the predict function to get the result
-        res = predict(file)
+        result = predict(file)
 
         # Datetime object containing current date and time
         now = datetime.now()
-        # dd/mm/YY H:M:S
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         file.seek(0)
         db.users.update_one(
             {"username": session['username'], "newborns.name": selected_newborn_name},
-            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": res}}})
+            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": result}}})
 
-        return render_template("upload.html", result=res, newborns=newborns)
+        return render_template("upload.html", newborns=newborns, result=result)
