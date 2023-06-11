@@ -13,6 +13,7 @@ from backend.Newborns import newborns_bp
 from backend.User import user_bp
 from backend.Edit import edit_bp
 from backend.Edit import delete_bp
+import gdown
            
 app = Flask(__name__, static_url_path='/static')
 
@@ -37,6 +38,25 @@ app.register_blueprint(newborns_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(edit_bp)
 app.register_blueprint(delete_bp)
+
+def download_model():
+    # Define the local file path to save the downloaded model
+    output_file = "model1.h5"
+
+    # Check if the model file already exists
+    if not os.path.exists(output_file):
+        # URL to download the model file from Google Drive
+        url = "https://drive.google.com/uc?id=1OxnbLXM2ACvXUiXRAP64nqCoQs7xnv7Y"
+
+        # Download the file using gdown library
+        gdown.download(url, output_file, quiet=False)
+
+        print("Model file downloaded successfully.")
+    else:
+        print("Model file already exists.")
+
+# Call the function to download the model file (if needed)
+download_model()
 
 if __name__ == '__main__':
     app.run(debug=True)
