@@ -1,8 +1,8 @@
 from pymongo import MongoClient
 
-#client = MongoClient('mongodb+srv://Crybaby:XtQUCMWF1HcKVjN9@cluster0.hleztpr.mongodb.net/')  # Update connection string as per your MongoDB setup
+client = MongoClient('mongodb+srv://Crybaby:XtQUCMWF1HcKVjN9@cluster0.hleztpr.mongodb.net/')  # Update connection string as per your MongoDB setup
 
-client = MongoClient('mongodb://localhost:27017/')  # Update connection string as per your MongoDB setup
+#client = MongoClient('mongodb://localhost:27017/')  # Update connection string as per your MongoDB setup
 db = client['Crybaby']  # Replace 'Crybaby' with the name of your database
 
 # Check if the 'Crybaby' database exists
