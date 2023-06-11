@@ -4,6 +4,15 @@
   {% include 'links.html' %}
   <a href="{{ url_for('upload.upload') }}"></a>
   <title>Upload</title>
+  <style>
+    .result-container {
+      text-align: center;
+    }
+    
+    .file-dropbox {
+      width: 300px; /* Adjust the width as needed */
+    }
+  </style>
 </head>
 <body class="background">
   <div class="h-100 p-4">
@@ -16,31 +25,48 @@
             <br>
             <div class="underline-title"></div>
           </div>
+          <div id="card-content"></div>
           <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <input type="file" name="file" data-role="file" data-mode="drop" onchange="onFileInputChange(event)">
+            <input id="fileInput" type="file" name="file" data-role="file" data-mode="drop" onchange="onFileInputChange(event)" class="file-dropbox">
+            <label for="newborn_name" style="padding-top:22px; font-weight: bold;">
+              &nbsp;Pick a newborn
+            </label>
+      
             <select name="newborn_name">
               {% for n in newborns %}
               <option value="{{ n['name'] }}">{{ n['name'] }}</option>
               {% endfor %}
             </select>
-            <input type="text" name="recording_name" placeholder="Enter recording name">
+         
             <br>
+            <input type="text" name="recording_name" placeholder="Enter recording name">
+          </div>
             <button type="submit" id="upload-button" style="display: none;">Upload</button>
           </form>
           {% if result is defined %}
-          <div>
+          <div class="result-container">
             <div id="card-title">
               <h2>Prediction result</h2>
               <br>
               <div class="underline-title"></div>
             </div>
             <h2>{{result}}</h2>
+            {% if result == 'Discomfort' %}
+            <img src="{{ url_for('static', filename='discomfort.png') }}" alt="Image 1" height="100">
+            {% elif result == 'Hunger' %}
+            <img src="{{ url_for('static', filename='hungry.png') }}" alt="Image 2" height="100">
+            {% elif result == 'Tiredness' %}
+            <img src="{{ url_for('static', filename='tired.png') }}" alt="Image 3" height="100">
+            {% endif %}
           </div>
           {% endif %}
         </p>
       </div>
     </div>
   </div>
+
+
+
   <script>
     function showNotification(message) {
       var notification = document.createElement('div');
