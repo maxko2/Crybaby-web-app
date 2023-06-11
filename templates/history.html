@@ -9,13 +9,19 @@
     <div class="h-100 p-4">
       {% include 'navbar.html' %}
       <div id="largecard">
-        <span>pick a newborn:</span>
-        <select name="newborn_name" id="newborn-select">
+        <div id="card-title">
+          <h2 >History</h2>
+          <br>
+          <div class="underline-title"></div>
+        </div>
+        <label id="labelBoldUnderline">&nbsp;Pick a newborn:</label>
+        <select name="newborn_name" id="newborn-select">     
           <option value="" disabled selected hidden></option>
           {% for n in newborns %}
           <option value="{{ n['name'] }}">{{ n['name'] }}</option>
           {% endfor %}
         </select>
+        <div id="card-content" class="table-container">
         <script>
           const newbornSelect = document.getElementById('newborn-select');
           let isFirstClick = true;
@@ -27,8 +33,7 @@
             }
           });
         </script>
-        <div class="table-container">
-          <table class="table-container table">
+          <table class="table">
             <thead>
               <tr>
                 <th data-sortable="true" data-sort-dir="asc">Recording Name</th>
@@ -41,7 +46,6 @@
             </thead>
             <tbody id="recording-table-body"></tbody>
           </table>
-        </div>
         <script>
           const newbornDropdown = document.querySelector('[name=newborn_name]');
           const recordingTableBody = document.getElementById('recording-table-body');
@@ -257,6 +261,7 @@
         </script>
       </div>
     </div>
+  </div>
     <div id="audio-container"></div> <!-- Container for playing audio -->
   </body>
 </html>
