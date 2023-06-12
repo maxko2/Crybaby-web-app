@@ -31,6 +31,7 @@ def upload():
 
         # Call the predict function to get the result
         result = predict(file)
+        print(result)
         # Datetime object containing current date and time
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -40,4 +41,4 @@ def upload():
             {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": result}}})
         file.close()
 
-        return render_template("upload.html", newborns=newborns, result=result)
+        return result

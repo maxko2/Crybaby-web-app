@@ -8,9 +8,24 @@
     .result-container {
       text-align: center;
     }
-    
+
     .file-dropbox {
-      width: 300px; /* Adjust the width as needed */
+      width: 400;
+    }
+
+    .loading-container {
+      position: relative; 
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .loading-text {
+      font-size: 20px;
+      font-weight: bold;
+      position: absolute; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
     }
   </style>
 </head>
@@ -25,47 +40,51 @@
             <br>
             <div class="underline-title"></div>
           </div>
-          <div id="card-content"></div>
-          <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-            <input id="fileInput" type="file" name="file" data-role="file" data-mode="drop" onchange="onFileInputChange(event)" class="file-dropbox">
-            <label for="newborn_name" style="padding-top:22px; font-weight: bold;">
-              &nbsp;Pick a newborn
-            </label>
-      
-            <select name="newborn_name">
-              {% for n in newborns %}
-              <option value="{{ n['name'] }}">{{ n['name'] }}</option>
-              {% endfor %}
-            </select>
-         
-            <br>
-            <input type="text" name="recording_name" placeholder="Enter recording name">
-          </div>
-            <button type="submit" id="upload-button" style="display: none;">Upload</button>
-          </form>
-          {% if result is defined %}
-          <div class="result-container">
-            <div id="card-title">
-              <h2>Prediction result</h2>
+          <div id="card-content">
+            <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
+              <input id="fileInput" type="file" name="file" data-role="file" onchange="onFileInputChange(event)" class="file-dropbox" data-button-title="<span class='mif-folder'></span>" data-prepend="Choose a WAV file:">
+              <label for="newborn_name" style="padding-top:22px; font-weight: bold;">
+                &nbsp;Pick a newborn
+              </label>
+
+              <select name="newborn_name">
+                {% for n in newborns %}
+                <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+                {% endfor %}
+              </select>
+
               <br>
-              <div class="underline-title"></div>
+              <input type="text" name="recording_name" placeholder="Enter recording name">
+
+              <button type="submit" id="upload-button" style="display: none;">Upload</button>
+            </form>
+            <div class="loading-container" id="loading-container" style="display: none;">
+              {% include 'loading.html' %}
+              <p class="loading-text">Processing...</p>
             </div>
-            <h2>{{result}}</h2>
-            {% if result == 'Discomfort' %}
-            <img src="{{ url_for('static', filename='discomfort.png') }}" alt="Image 1" height="100">
-            {% elif result == 'Hunger' %}
-            <img src="{{ url_for('static', filename='hungry.png') }}" alt="Image 2" height="100">
-            {% elif result == 'Tiredness' %}
-            <img src="{{ url_for('static', filename='tired.png') }}" alt="Image 3" height="100">
+            <div id="prediction-result" {% if not file_chosen %}style="display: none;"{% endif %}></div>
+            {% if result is defined %}
+            <div class="result-container">
+              <div id="card-title">
+                <h2>Prediction result</h2>
+                <br>
+                <div class="underline-title"></div>
+              </div>
+              <h2 style="font-size: 16px; font-weight: bold;">{{result}}</h2>
+              {% if result == 'Discomfort' %}
+              <img src="{{ url_for('static', filename='discomfort.png') }}" alt="Image 1" height="50">
+              {% elif result == 'Hunger' %}
+              <img src="{{ url_for('static', filename='hungry.png') }}" alt="Image 2" height="50">
+              {% elif result == 'Tiredness' %}
+              <img src="{{ url_for('static', filename='tired.png') }}" alt="Image 3" height="50">
+              {% endif %}
+            </div>
             {% endif %}
           </div>
-          {% endif %}
         </p>
       </div>
     </div>
   </div>
-
-
 
   <script>
     function showNotification(message) {
@@ -102,7 +121,7 @@
       }
 
       var fileSizeInBytes = file.size;
-      var maxSizeInBytes = 2048 * 1024; // 1MB
+      var maxSizeInBytes = 2048 * 1024; // 2MB
 
       if (fileSizeInBytes > maxSizeInBytes) {
         // Show custom notification for exceeding file size limit
@@ -113,34 +132,57 @@
       }
 
       document.getElementById('upload-button').style.display = 'block'; // Show the upload button
+      document.getElementById('prediction-result').style.display = 'none'; // Hide the prediction result
     }
 
-    function validateForm() {
-      var fileInput = document.querySelector('input[name="file"]');
-      if (fileInput.files.length === 0) {
-        showNotification('Please select a file!');
-        return false; // Prevent form submission if no file is selected
+    document.getElementById('upload-form').addEventListener('submit', function (event) {
+      var newbornSelect = document.querySelector('select[name="newborn_name"]');
+      if (newbornSelect.value === '') {
+        event.preventDefault(); // Prevent form submission
+        showNotification('Please select a newborn!');
+        return;
       }
-      return true;
-    }
 
-    function sendData(data) {
-      const form = new FormData(document.querySelector('form'));
-      const newbornName = document.querySelector('select[name="newborn_name"]').value;
-      const recordingName = document.querySelector('input[name="recording_name"]').value;
-      form.append('newborn_name', newbornName);
-      form.append('recording_name', recordingName);
-      form.append('file', data, 'data');
-      fetch('/upload', { method: 'POST', body: form })
+      document.getElementById('upload-button').style.display = 'none'; // Hide the upload button
+      document.getElementById('loading-container').style.display = 'block'; // Show the loading container
+
+      event.preventDefault(); // Prevent form submission
+
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
+      var form = new FormData();
+      form.append('file', file);
+      form.append('newborn_name', newbornSelect.value);
+      form.append('recording_name', document.querySelector('input[name="recording_name"]').value);
+      fetch('/upload', {
+        method: 'POST',
+        body: form
+      })
         .then(response => response.text())
         .then(result => {
-          document.getElementById('prediction-result').textContent = result;
-          console.log(result);
+          document.getElementById('prediction-result').innerHTML = `
+            <div class="result-container">
+              <div id="card-title">
+                <h2>Prediction result</h2>
+                <br>
+                <div class="underline-title"></div>
+              </div>
+              <h2 style="font-size: 16px; font-weight: bold;">${result}</h2>
+              ${result === 'Discomfort' ? `<img src="{{ url_for('static', filename='discomfort.png') }}" alt="Image 1" height="50">` :
+              result === 'Hunger' ? `<img src="{{ url_for('static', filename='hungry.png') }}" alt="Image 2" height="50">` :
+              result === 'Tiredness' ? `<img src="{{ url_for('static', filename='tired.png') }}" alt="Image 3" height="50">` : ''}
+            </div>
+          `;
+          document.getElementById('prediction-result').style.display = 'block'; // Show the prediction result
+          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
+          fileInput.value = null; // Reset the file input
         })
         .catch(error => {
           console.error('Error:', error);
+          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
+          document.getElementById('upload-button').style.display = 'block'; // Show the upload button (in case of error)
         });
-    }
+    });
   </script>
 </body>
 </html>

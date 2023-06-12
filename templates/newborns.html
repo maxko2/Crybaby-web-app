@@ -7,25 +7,32 @@
     <div class="h-100 p-4">
         {% include 'navbar.html' %}
         <div id="largecard">
-            <p>
-                <div class="remark alert">
-                    <h3>Newborns</h3>
-                </div>
+            <div id="card-title">
+                <h2 class="card-title">Newborns</h2>
+                <br>
+                <div class="underline-title"></div>
+            </div>
+            <div class="card-content">
                 <form action="/newborns" method="POST">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" class="form-content" required><br>
                     <div class="form-group">
-                        <label for="birthdate">Birthdate:</label>
+                        <label for="name" style="padding-top: 22px; font-weight: bold;">Name:</label>
+                        <input type="text" id="name" name="name" class="form-content" required>
+                        <div class="form-border"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate" style="padding-top: 22px; font-weight: bold;">Birthdate:</label>
                         <div class="input-wrapper">
-                            <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}">
+                            <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{date}}" class="form-content">
                         </div>
                     </div>
-                    <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" class="form-content" required>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select><br>
-                    <input type="submit" value="Submit" id="submit-btn">
+                    <div class="form-group">
+                        <label for="gender" style="padding-top: 22px; font-weight: bold;">Gender:</label>
+                        <select id="gender" name="gender" class="form-content" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select><br>
+                    </div>
+                    <input type="submit" value="Add newborn" id="submit-btn" class="form-content">
                 </form>
                 <div class="table-container" style="overflow-y: auto; max-height: 260px;">
                     <table class="table">
@@ -38,7 +45,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for newborn in newborns %}
+                            {% for newborn in newborns %}
                             <tr>
                                 <td>{{ newborn['name'] }}</td>
                                 <td>{{ newborn['birthdate'] }}</td>
@@ -46,21 +53,22 @@
                                 <td>
                                     <form action="/newborns/{{ loop.index0 }}" method="POST">
                                         <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="button alert small" style="float: left;width:35%;">Delete</button>
+                                        <button type="submit" class="button alert" style="float: left;width:35%;">
+                                            <span class="mif-bin"></span>
+                                        </button>
                                     </form>
                                     <form action="/newborns/{{ loop.index0 }}/edit" method="GET">
-                                        <button type="submit" class="button success small" style="float: left; margin-left: 10px; width: 35%">Edit</button>
+                                        <button type="submit" class="button success" style="float: left; width: 35%; margin-left:10px">
+                                            <span class="mif-wrench"></span>
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
-                        {% endfor %}
+                            {% endfor %}
                         </tbody>
                     </table>
-                </div>	
                 </div>
             </div>
-        </p>
+        </div>
     </div>
-</div>
-</body>
-</html>
+</body

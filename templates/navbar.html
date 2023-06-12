@@ -1,16 +1,18 @@
 <aside class="sidebar pos-absolute z-2" data-role="sidebar" data-toggle="#sidebar-toggle-3" id="sb3" data-shift=".shifted-content">
   <div class="sidebar-header">
-    <div class="avatar"></div>
-    <span class="title fg-black">Crybaby</span>
+    <div class="avatar">
+      <img src="static/favicon.ico" alt="Crybaby Image" class="avatar-img" style="width: 80px; height: 80px;">
+    </div>
+    <span class="title fg-lightRed" style="font-weight: bold;">Crybaby</span>
   </div>
   <ul class="sidebar-menu">
-    <li><a href="/home"><span class="mif-home icon"></span>Home</a></li>
-    <li><a href="/upload"><span class="mif-file-upload icon"></span>Upload</a></li>
-    <li><a href="/record"><span class="mif-record_voice_over icon"></span>Record</a></li>
-    <li><a href="/history"><span class="mif-history icon"></span>History</a></li>
-    <li><a href="/newborns"><span class="mif-organization icon"></span>Newborns</a></li>
-    <li><a href="/user"><span class="mif-user icon"></span>User</a></li>
-    <li><a href="/logout"><span class="mif-exit icon"></span>Logout</a></li>
+    <li><a href="/home" style="font-weight: bold;"><span class="mif-home icon"></span>Home</a></li>
+    <li><a href="/upload" style="font-weight: bold;"><span class="mif-file-upload icon"></span>Upload</a></li>
+    <li><a href="/record" style="font-weight: bold;"><span class="mif-record_voice_over icon"></span>Record</a></li>
+    <li><a href="/history" style="font-weight: bold;"><span class="mif-history icon"></span>History</a></li>
+    <li><a href="/newborns" style="font-weight: bold;"><span class="mif-organization icon"></span>Newborns</a></li>
+    <li><a href="/user" style="font-weight: bold;"><span class="mif-user icon"></span>User</a></li>
+    <li><a href="/logout" style="font-weight: bold;"><span class="mif-exit icon"></span>Logout</a></li>
   </ul>
 </aside>
 
@@ -27,7 +29,9 @@
   const sidebar = document.querySelector('#sb3');
   const contentContainer = document.querySelector('.content-container');
   sidebarToggle.addEventListener('click', function() {
-    sidebar.classList.toggle('sidebar-active');
-    contentContainer.classList.toggle('content-active');
+    if (sidebar && contentContainer) {
+      sidebar.classList.toggle('sidebar-active');
+      contentContainer.classList.toggle('content-active');
+    }
   });
 </script>

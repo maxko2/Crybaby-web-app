@@ -44,8 +44,8 @@ def record():
 
         data = FileStorage(file, filename)
         # After performing the prediction
-        res = predict(data)
-        result = res  # Store the prediction result in a variable
+        result = predict(data)
+        print(result)
         filename = request.form['recording_name']
         file.seek(0)
         # Return the response
@@ -54,7 +54,8 @@ def record():
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         db.users.update_one(
             {"username": session['username'], "newborns.name": selected_newborn_name},
-            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": res}}})
+            {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": result}}})
         file.close()
         os.remove("output.wav")
+        os.remove("input.bin")
         return result  # Return the prediction result as the response
