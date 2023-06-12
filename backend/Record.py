@@ -4,7 +4,7 @@ from services.predictionModels import predict
 from services.mongoDB import db
 from werkzeug.datastructures import FileStorage
 from datetime import datetime
-
+import os
 record_bp = Blueprint('record', __name__ )
 
 @record_bp.route('/record', methods=['POST', 'GET'])
@@ -56,4 +56,5 @@ def record():
             {"username": session['username'], "newborns.name": selected_newborn_name},
             {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": res}}})
         file.close()
+        os.remove("output.wav")
         return result  # Return the prediction result as the response
