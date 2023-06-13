@@ -10,30 +10,19 @@
       {% include 'navbar.html' %}
       <div id="largecard">
         <div id="card-title">
-          <h2 >History</h2>
+          <h2>History</h2>
           <br>
           <div class="underline-title"></div>
         </div>
         <label for="newborn" style="padding-top: 22px; font-weight: bold;">&nbsp;Pick a newborn:</label>
         <br>
-        <select name="newborn_name" id="newborn-select">     
+        <select name="newborn_name" id="newborn-select">
           <option value="" disabled selected hidden></option>
           {% for n in newborns %}
           <option value="{{ n['name'] }}">{{ n['name'] }}</option>
           {% endfor %}
         </select>
         <div id="card-content" class="table-container">
-        <script>
-          const newbornSelect = document.getElementById('newborn-select');
-          let isFirstClick = true;
-
-          newbornSelect.addEventListener('click', function () {
-            if (isFirstClick) {
-              newbornSelect.value = '';
-              isFirstClick = false;
-            }
-          });
-        </script>
           <table class="table">
             <thead>
               <tr>
@@ -47,222 +36,227 @@
             </thead>
             <tbody id="recording-table-body"></tbody>
           </table>
-        <script>
-          const newbornDropdown = document.querySelector('[name=newborn_name]');
-          const recordingTableBody = document.getElementById('recording-table-body');
-          const recordingInstances = []; // Array to store recording instances
-          let previousPlayButton = null; // Reference to the previously playing button
-
-          newbornDropdown.addEventListener('change', async (event) => {
-            const selectedNewbornName = event.target.value;
-            // clear existing table rows
-            recordingTableBody.innerHTML = '';
-            // Fetch recordings for selected newborn
-            try {
-              const response = await fetch(`/api/recordings?newborn_name=${selectedNewbornName}`);
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              const data = await response.json();
-              console.log(data);
-              data.forEach((recording, index) => {
-                const tr = document.createElement('tr');
-                const tdRecordingName = document.createElement('td');
-                tdRecordingName.textContent = recording.name;
-                const tdDate = document.createElement('td');
-                tdDate.textContent = recording.date;
-                const tdPrediction = document.createElement('td');
-                tdPrediction.textContent = recording.prediction;
-                const tdFile = document.createElement('td');
-
-                const playButton = document.createElement('button');
-                playButton.id = `play-button-${index}`;
-                const playIcon = document.createElement('span');
-                playIcon.classList.add('mif-play'); // Play icon from Metro UI
-                const stopIcon = document.createElement('span');
-                stopIcon.classList.add('mif-stop'); // Square icon from Metro UI
-                playButton.appendChild(playIcon);
-                playButton.addEventListener('click', () => {
-                  const isPlaying = playButton.contains(stopIcon);
-                  if (isPlaying) {
-                    playButton.replaceChild(playIcon, stopIcon);
-                    stopRecording(index);
-                  } else {
-                    // Change the icon of the previously playing button to play icon
-                    if (previousPlayButton && previousPlayButton !== playButton) {
-                      const previousPlayIcon = document.createElement('span');
-                      previousPlayIcon.classList.add('mif-play');
-                      previousPlayButton.innerHTML = '';
-                      previousPlayButton.appendChild(previousPlayIcon);
-                    }
-                    playButton.innerHTML = '';
-                    playButton.appendChild(stopIcon);
-                    previousPlayButton = playButton; // Update the reference to the current playing button
-                    playRecording(recording.file, index);
-                  }
-                });
-                tdFile.appendChild(playButton);
-
-                const tdFeedback = document.createElement('td');
-                const buttonContainer = document.createElement('div'); // Create a container for buttons
-                buttonContainer.classList.add('button-container'); // Add the button container class
-
-                const feedbackButtonV = document.createElement('button');
-                feedbackButtonV.classList.add('button', 'success'); // Use the "success" class from Metro UI
-                feedbackButtonV.classList.add('mif-thumbs-up'); // Use the "success" class from Metro UI
-
-                const feedbackButtonX = document.createElement('button');
-                feedbackButtonX.classList.add('button', 'alert'); // Use the "alert" class from Metro UI
-                feedbackButtonX.classList.add('mif-thumbs-down'); // Use the "success" class from Metro UI
-                buttonContainer.appendChild(feedbackButtonV); // Add the buttons to the container
-                buttonContainer.appendChild(feedbackButtonX);
-
-                tdFeedback.appendChild(buttonContainer); // Add the button container to the feedback column
-                tr.appendChild(tdRecordingName);
-                tr.appendChild(tdDate);
-                tr.appendChild(tdPrediction);
-                tr.appendChild(tdFile);
-                tr.appendChild(tdFeedback);
-
-                const tdDelete = document.createElement('td');
-                const deleteButton = document.createElement('button');
-                deleteButton.classList.add('button', 'dark');
-                deleteButton.classList.add('mif-bin');
-
-                deleteButton.addEventListener('click', () => {
-                  deleteRecording(index);
-                  tr.remove(); // Remove the row from the table
-                });
-                tdDelete.appendChild(deleteButton);
-                tr.appendChild(tdDelete);
-
-                recordingTableBody.appendChild(tr);
-
-                // Check if there is existing feedback
-                if (recording.feedback) {
-                  if (recording.feedback === 'correct') {
-                    feedbackButtonV.style.opacity = '1';
-                    feedbackButtonX.style.opacity = '0.3';
-                  } else if (recording.feedback === 'incorrect') {
-                    feedbackButtonV.style.opacity = '0.3';
-                    feedbackButtonX.style.opacity = '1';
-                  }
-                }
-
-                feedbackButtonV.addEventListener('click', () => {
-                  updateFeedback('correct', index);
-                  feedbackButtonV.style.opacity = '1';
-                  feedbackButtonX.style.opacity = '0.3';
-                });
-
-                feedbackButtonX.addEventListener('click', () => {
-                  updateFeedback('incorrect', index);
-                  feedbackButtonV.style.opacity = '0.3';
-                  feedbackButtonX.style.opacity = '1';
-                });
-
-                function updateFeedback(feedback, index) {
-                  fetch(`/api/recordings/${index}/feedback`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                      },
-                      body: `feedback=${feedback}`,
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      console.log(data);
-                    })
-                    .catch((error) => {
-                      console.error('Error:', error);
-                    });
-                }
-
-                function deleteRecording(index) {
-                  fetch(`/api/recordings/${index}`, {
-                      method: 'DELETE',
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      console.log(data);
-                    })
-                    .catch((error) => {
-                      console.error('Error:', error);
-                    });
-                }
-
-                function playRecording(file, index) {
-                  // Stop any active recordings
-                  stopAllRecordings();
-
-                  // Convert the BinData to a Blob
-                  const binData = atob(file);
-                  const buffer = new ArrayBuffer(binData.length);
-                  const view = new Uint8Array(buffer);
-                  for (let i = 0; i < binData.length; i++) {
-                    view[i] = binData.charCodeAt(i);
-                  }
-                  const blob = new Blob([view], { type: 'audio/wav' });
-
-                  // Create a new audio element if it doesn't exist for the recording
-                  if (!recordingInstances[index]) {
-                    recordingInstances[index] = new Audio();
-                    recordingInstances[index].controls = true;
-                    recordingInstances[index].autoplay = true;
-                  }
-
-                  // Set the source of the audio element to the Blob URL
-                  recordingInstances[index].src = URL.createObjectURL(blob);
-
-                  // Append the audio element to the page
-                  const audioContainer = document.getElementById('audio-container');
-                  audioContainer.innerHTML = '';
-                  audioContainer.appendChild(recordingInstances[index]);
-
-                  // Add an event listener to change the button back to the play icon when the audio ends
-                  recordingInstances[index].addEventListener('ended', () => {
-                    const playButton = document.getElementById(`play-button-${index}`);
-                    const playIcon = document.createElement('span');
-                    playIcon.classList.add('mif-play');
-                    playButton.innerHTML = '';
-                    playButton.appendChild(playIcon);
-
-                    // Remove the audio element from the page
-                    audioContainer.innerHTML = '';
-
-                    // Reset the audio source
-                    recordingInstances[index].src = '';
-
-                    // Reset the recording instance
-                    recordingInstances[index] = null;
-                  });
-                }
-
-                function stopRecording(index) {
-                  if (recordingInstances[index]) {
-                    const audio = recordingInstances[index];
-                    audio.pause();
-                    audio.currentTime = 0;
-                  }
-                }
-
-                function stopAllRecordings() {
-                  recordingInstances.forEach((audio) => {
-                    if (audio) {
-                      audio.pause();
-                      audio.currentTime = 0;
-                    }
-                  });
-                }
-              });
-            } catch (error) {
-              console.error('There has been a problem with your fetch operation:', error);
-            }
-          });
-        </script>
+          <div id="audio-container" style="display: none;"></div>
+        </div>
       </div>
     </div>
-  </div>
-
   </body>
+  <script>
+    const newbornDropdown = document.querySelector('[name=newborn_name]');
+    const recordingTableBody = document.getElementById('recording-table-body');
+    const recordingInstances = []; // Array to store recording instances
+    let previousPlayButton = null; // Reference to the previously playing button
+
+    newbornDropdown.addEventListener('change', async (event) => {
+      const selectedNewbornName = event.target.value;
+      // clear existing table rows
+      recordingTableBody.innerHTML = '';
+      // Fetch recordings for selected newborn
+      try {
+        const response = await fetch(`/api/recordings?newborn_name=${selectedNewbornName}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+        data.forEach((recording, index) => {
+          const tr = document.createElement('tr');
+          const tdRecordingName = document.createElement('td');
+          tdRecordingName.textContent = recording.name;
+          const tdDate = document.createElement('td');
+          tdDate.textContent = recording.date;
+          const tdPrediction = document.createElement('td');
+          tdPrediction.textContent = recording.prediction;
+          const tdFile = document.createElement('td');
+
+          const playButton = document.createElement('button');
+          playButton.id = `play-button-${index}`;
+          const playIcon = document.createElement('span');
+          playIcon.classList.add('mif-play'); // Play icon from Metro UI
+          const stopIcon = document.createElement('span');
+          stopIcon.classList.add('mif-stop'); // Square icon from Metro UI
+          playButton.appendChild(playIcon);
+          playButton.addEventListener('click', () => {
+            const isPlaying = playButton.contains(stopIcon);
+            if (isPlaying) {
+              playButton.replaceChild(playIcon, stopIcon);
+              stopRecording(index);
+            } else {
+              // Change the icon of the previously playing button to play icon
+              if (previousPlayButton && previousPlayButton !== playButton) {
+                const previousPlayIcon = document.createElement('span');
+                previousPlayIcon.classList.add('mif-play');
+                previousPlayButton.innerHTML = '';
+                previousPlayButton.appendChild(previousPlayIcon);
+              }
+              playButton.innerHTML = '';
+              playButton.appendChild(stopIcon);
+              previousPlayButton = playButton; // Update the reference to the current playing button
+              playRecording(recording.file, index);
+            }
+          });
+          tdFile.appendChild(playButton);
+
+          const tdFeedback = document.createElement('td');
+          const buttonContainer = document.createElement('div'); // Create a container for buttons
+          buttonContainer.classList.add('button-container'); // Add the button container class
+
+          const feedbackButtonV = document.createElement('button');
+          feedbackButtonV.classList.add('button', 'success'); // Use the "success" class from Metro UI
+          feedbackButtonV.classList.add('mif-thumbs-up'); // Use the "success" class from Metro UI
+
+          const feedbackButtonX = document.createElement('button');
+          feedbackButtonX.classList.add('button', 'alert'); // Use the "alert" class from Metro UI
+          feedbackButtonX.classList.add('mif-thumbs-down'); // Use the "success" class from Metro UI
+          buttonContainer.appendChild(feedbackButtonV); // Add the buttons to the container
+          buttonContainer.appendChild(feedbackButtonX);
+
+          tdFeedback.appendChild(buttonContainer); // Add the button container to the feedback column
+          tr.appendChild(tdRecordingName);
+          tr.appendChild(tdDate);
+          tr.appendChild(tdPrediction);
+          tr.appendChild(tdFile);
+          tr.appendChild(tdFeedback);
+
+          const tdDelete = document.createElement('td');
+          const deleteButton = document.createElement('button');
+          deleteButton.classList.add('button', 'dark');
+          deleteButton.classList.add('mif-bin');
+
+          deleteButton.addEventListener('click', () => {
+            deleteRecording(index);
+            tr.remove(); // Remove the row from the table
+          });
+          tdDelete.appendChild(deleteButton);
+          tr.appendChild(tdDelete);
+
+          recordingTableBody.appendChild(tr);
+
+          // Check if there is existing feedback
+          if (recording.feedback) {
+            if (recording.feedback === 'correct') {
+              feedbackButtonV.style.opacity = '1';
+              feedbackButtonX.style.opacity = '0.3';
+            } else if (recording.feedback === 'incorrect') {
+              feedbackButtonV.style.opacity = '0.3';
+              feedbackButtonX.style.opacity = '1';
+            }
+          }
+
+          feedbackButtonV.addEventListener('click', () => {
+            updateFeedback('correct', index);
+            feedbackButtonV.style.opacity = '1';
+            feedbackButtonX.style.opacity = '0.3';
+          });
+
+          feedbackButtonX.addEventListener('click', () => {
+            updateFeedback('incorrect', index);
+            feedbackButtonV.style.opacity = '0.3';
+            feedbackButtonX.style.opacity = '1';
+          });
+
+          function updateFeedback(feedback, index) {
+            fetch(`/api/recordings/${index}/feedback`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `feedback=${feedback}`,
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
+          }
+
+          function deleteRecording(index) {
+            fetch(`/api/recordings/${index}`, {
+              method: 'DELETE',
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
+          }
+
+          function playRecording(file, index) {
+            // Stop any active recordings
+            stopAllRecordings();
+
+            // Convert the BinData to a Blob
+            const binData = atob(file);
+            const buffer = new ArrayBuffer(binData.length);
+            const view = new Uint8Array(buffer);
+            for (let i = 0; i < binData.length; i++) {
+              view[i] = binData.charCodeAt(i);
+            }
+            const blob = new Blob([view], { type: 'audio/wav' });
+
+            // Create a new audio element if it doesn't exist for the recording
+            if (!recordingInstances[index]) {
+              recordingInstances[index] = new Audio();
+              recordingInstances[index].controls = true;
+              recordingInstances[index].autoplay = true;
+            }
+
+            // Set the source of the audio element to the Blob URL
+            recordingInstances[index].src = URL.createObjectURL(blob);
+
+            // Append the audio element to the page
+            const audioContainer = document.getElementById('audio-container');
+            audioContainer.innerHTML = '';
+            audioContainer.appendChild(recordingInstances[index]);
+
+            // Add an event listener to change the button back to the play icon when the audio ends
+            recordingInstances[index].addEventListener('ended', () => {
+              const playButton = document.getElementById(`play-button-${index}`);
+              const playIcon = document.createElement('span');
+              playIcon.classList.add('mif-play');
+              playButton.innerHTML = '';
+              playButton.appendChild(playIcon);
+              playButton.classList.remove('playing'); // Remove the "playing" class
+
+              // Remove the audio element from the page
+              audioContainer.innerHTML = '';
+
+              // Reset the audio source
+              recordingInstances[index].src = '';
+
+              // Reset the recording instance
+              recordingInstances[index] = null;
+            });
+          }
+
+          function stopRecording(index) {
+            if (recordingInstances[index]) {
+              const audio = recordingInstances[index];
+              audio.pause();
+              audio.currentTime = 0;
+            }
+          }
+
+          function stopAllRecordings() {
+            recordingInstances.forEach((audio) => {
+              if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+              }
+            });
+          }
+        });
+      } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+      }
+    });
+  </script>
+</div>
+</div>
+</div>
+</body>
 </html>
