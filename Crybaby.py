@@ -41,7 +41,7 @@ app.register_blueprint(delete_bp)
 
 def download_model():
     # Define the local file path to save the downloaded model
-    output_file = "model1.h5"
+    output_file = "Final-Project/model1.h5"
 
     # Check if the model file already exists
     if not os.path.exists(output_file):
@@ -59,4 +59,4 @@ def download_model():
 download_model()
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0")
+    app.run(debug=True,host="0.0.0.0",threaded=True)
