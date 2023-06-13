@@ -33,28 +33,27 @@
   <div class="h-100 p-4">
     {% include 'navbar.html' %}
     <div id="largecard">
-      <div id="upload-form">
+      <!--div id="upload-form"-->
         <p>
           <div id="card-title">
             <h2>Upload a recording</h2>
-            <br>
             <div class="underline-title"></div>
           </div>
           <div id="card-content">
             <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
               <input id="fileInput" type="file" name="file" data-role="file" onchange="onFileInputChange(event)" class="file-dropbox" data-button-title="<span class='mif-folder'></span>" data-prepend="Choose a WAV file:">
-              <label for="newborn_name" style="padding-top:22px; font-weight: bold;">
-                &nbsp;Pick a newborn:
-              </label>
+              <label for="newborn_name" style="padding-top:22px; padding-bottom:22px; font-weight: bold;">
+                Pick a newborn:
 
               <select name="newborn_name">
                 {% for n in newborns %}
                 <option value="{{ n['name'] }}">{{ n['name'] }}</option>
                 {% endfor %}
               </select>
+            </label>
 
               <br>
-              <input type="text" name="recording_name" placeholder="Enter recording name">
+              <input type="text"  name="recording_name"  placeholder="Enter recording name">
 
               <button type="submit" id="upload-button" style="display: none;">Upload</button>
             </form>
@@ -82,7 +81,7 @@
             {% endif %}
           </div>
         </p>
-      </div>
+      <!--/div-->
     </div>
   </div>
 
