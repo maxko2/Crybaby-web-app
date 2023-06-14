@@ -60,14 +60,15 @@ def download_model():
         print("Model file downloaded successfully.")
     else:
         print("Model file already exists.")
-
+ 
 # Call the function to download the model file (if needed)
 download_model()
 
 if __name__ == '__main__':
     # Development server
-    app.run(debug=True,host="0.0.0.0")
-    
+    #app.run(debug=True,host="0.0.0.0")
+    app.run(debug=True)
+  
     #Production server
     #serve(app, host='0.0.0.0', port=5000)
     

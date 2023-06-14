@@ -4,30 +4,7 @@
   {% include 'links.html' %}
   <a href="{{ url_for('upload.upload') }}"></a>
   <title>Upload</title>
-  <style>
-    .result-container {
-      text-align: center;
-    }
 
-    .file-dropbox {
-      width: 400;
-    }
-
-    .loading-container {
-      position: relative; 
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .loading-text {
-      font-size: 20px;
-      font-weight: bold;
-      position: absolute; 
-      top: 50%; 
-      left: 50%; 
-      transform: translate(-50%, -50%); 
-    }
-  </style>
 </head>
 <body class="background">
   <div class="h-100 p-4">
@@ -42,18 +19,19 @@
           <div id="card-content">
             <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
               <input id="fileInput" type="file" name="file" data-role="file" onchange="onFileInputChange(event)" class="file-dropbox" data-button-title="<span class='mif-folder'></span>" data-prepend="Choose a WAV file:">
-              <label for="newborn_name" style="padding-top:22px; padding-bottom:22px; font-weight: bold;">
-                Pick a newborn:
-
-              <select name="newborn_name">
-                {% for n in newborns %}
-                <option value="{{ n['name'] }}">{{ n['name'] }}</option>
-                {% endfor %}
-              </select>
-            </label>
+              <span style="padding-top:22px; padding-bottom:22px;">
+                <label for="newborn_name" style="padding-top:22px; padding-bottom:22px; font-weight: bold;">Pick a newborn: </label>               
+                <select name="newborn_name">
+                  {% for n in newborns %}
+                  <option value="{{ n['name'] }}">{{ n['name'] }}</option>
+                  {% endfor %}
+                </select>
+              </span>
 
               <br>
-              <input type="text"  name="recording_name"  placeholder="Enter recording name">
+              <input type="text"  class="form-content" name="recording_name"  placeholder="Enter recording name">
+              <div class="form-border"></div>
+
 
               <button type="submit" id="upload-button" style="display: none;">Upload</button>
             </form>
@@ -81,7 +59,6 @@
             {% endif %}
           </div>
         </p>
-      <!--/div-->
     </div>
   </div>
 

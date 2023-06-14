@@ -4,37 +4,62 @@
   {% include 'links.html' %}
   <a href="{{ url_for('record.record') }}"></a>
   <title>Record</title>
+  
 </head>
 <body class="background">
   <div class="h-100 p-4">
     {% include 'navbar.html' %}
     <div id="largecard">
-      <div id="record-form">
-        <p>
-          <div class="remark alert">
-            <h3>Make a new recording</h3>
-            <!-- HTML form for recording audio -->
-            <form action="/record" method="post" enctype="multipart/form-data">
-              <button id="startRecording">Start recording</button>
-              <button id="stopRecording" disabled>Stop recording</button>
+        <div id="card-title">
+          <h2>Record Live</h2>
+          <div class="underline-title"></div>
+        </div>
+        <div id="card-content">
+            <form action="/record" method="post" enctype="multipart/form-data" id="upload-form">
+              <span style="padding-top:22px; padding-bottom:22px;">
+              <label for="newborn_name" style="padding-top:22px; padding-bottom:22px; font-weight: bold;">Pick a newborn: </label>               
               <select name="newborn_name">
                 {% for n in newborns %}
                 <option value="{{ n['name'] }}">{{ n['name'] }}</option>
                 {% endfor %}
               </select>
-              <input type="text" name="recording_name" placeholder="Enter recording name">
-              </form>
-              <div id="prediction-result"></div>
-              {% if result is defined %}
-              <div>
-                <h3>Prediction Result:</h3>
-                <p><strong>The prediction is:</strong> {{ result }}</p>
+            </span>
+              <input type="text" class="form-content"name="recording_name" placeholder="Enter recording name">
+              <div class="form-border"></div>
+              <br>
+              <div style="margin-top:15px;">
+                <button id="startRecording" class="button light play-button "><span class="mif-mic icon-lg"></span></button>
+                <button id="stopRecording" class="button light icon-lg" disabled><i class="fas fa-stop"></i></button>
               </div>
+              
+            </form>
+            <div class="loading-container" id="loading-container" style="display: none;">
+              {% include 'loading.html' %}
+              <p class="loading-text">Processing...</p>
+            </div>
+            <div id="prediction-result" {% if not file_chosen %} style="display: none;"{% endif %}></div>
+            {% if result is defined %}
+            <div class="result-container">
+              <div id="card-title">
+                <h2>Prediction result</h2>
+                <br>
+                <div class="underline-title"></div>
+              </div>
+              <h2 style="font-size: 16px; font-weight: bold;">{{result}}</h2>
+              {% if result == 'Discomfort' %}
+              <img src="{{ url_for('static', filename='discomfort.png') }}" alt="Image 1" height="50">
+              {% elif result == 'Hunger' %}
+              <img src="{{ url_for('static', filename='hungry.png') }}" alt="Image 2" height="50">
+              {% elif result == 'Tiredness' %}
+              <img src="{{ url_for('static', filename='tired.png') }}" alt="Image 3" height="50">
               {% endif %}
-          </div>
-        </p> 
+            </div>
+            {% endif %}
+               
+        </div>
       </div>
     </div>
+
   </div>
   <script>
     navigator.mediaDevices.getUserMedia({ audio: true })
@@ -61,14 +86,31 @@
       fetch('/record', { method: 'POST', body: form })
         .then(response => response.text())
         .then(result => {
-          document.getElementById('prediction-result').textContent = result;
-          console.log(result);
+          document.getElementById('prediction-result').innerHTML = `
+            <div class="result-container">
+              <div id="card-title">
+                <h2>Prediction result</h2>
+                <br>
+                <div class="underline-title"></div>
+              </div>
+              <h2 style="font-size: 16px; font-weight: bold;">${result}</h2>
+              ${result === 'Discomfort' ? `<img src="{{ url_for('static', filename='discomfort.png') }}" alt="Image 1" height="50">` :
+              result === 'Hunger' ? `<img src="{{ url_for('static', filename='hungry.png') }}" alt="Image 2" height="50">` :
+              result === 'Tiredness' ? `<img src="{{ url_for('static', filename='tired.png') }}" alt="Image 3" height="50">` : ''}
+            </div>
+          `;
+          document.getElementById('prediction-result').style.display = 'block'; // Show the prediction result
+          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
+          fileInput.value = null; // Reset the file input
         })
         .catch(error => {
           console.error('Error:', error);
+          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
+          document.getElementById('upload-button').style.display = 'block'; // Show the upload button (in case of error)
         });
+      
     }
-
+    let audioChunks = [];
     let recTimeout;
     startRecording.onclick = e => {
       console.log('Recording has started..');
@@ -87,7 +129,8 @@
       stopRecording.disabled = true;
       rec.stop();
       clearTimeout(recTimeout);
-    };                                                       
+      
+    };
   </script>
 </body>
 </html>
