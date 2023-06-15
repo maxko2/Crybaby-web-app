@@ -14,19 +14,22 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
  - Trained model - h5 model file for predictions (explained in the next section).
  - Python version 3.11 - recommended for running the app [Download from Microsoft 
           store](https://apps.microsoft.com/store/detail/python-311/9NRWMJP3717K?hl=en-us&gl=us)
+          
+ - ffmpeg installed - [Download from official 
+         website](https://ffmpeg.org/download.html)
+         
+ - Add ffmpeg path to System Environment Variables in the Path section 
+ ![image](https://imgur.com/a/JvoSjIs)
 
 # Model Training
 
 # App Installation
-
- - Clone repo:
+Clone repo:
 
     git clone https://github.com/maxko2/Crybaby-web-app
         
-
- - Install requirements.txt:
+Install requirements.txt:
 
     pip install requirements.txt
-
    
 
