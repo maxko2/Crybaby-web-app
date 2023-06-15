@@ -4,3 +4,17 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
 
 ![image](https://github.com/maxko2/Crybaby-web-app/assets/49914498/51c0b2ef-26df-43a9-af8d-2c16cbf669c8)
 
+# Contents
+1. Initial Requirements
+2. Model Training
+3. App Installation
+
+#1 Initial Requirements
+*Internet connection - for downloading the model automatically by the app and running a production server.
+*Trained model - h5 model file for predictions (explained in the next section).
+*Python version 3.11 - recommended for running the app (https://apps.microsoft.com/store/detail/python-311/9NRWMJP3717K?hl=en-us&gl=us)
+*Installing requirements.txt - pip install requirements.txt.
+
+#2 Model Training
+
+#3 App Installation
