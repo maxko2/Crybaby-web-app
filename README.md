@@ -14,9 +14,8 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
 
 *Trained model - h5 model file for predictions (explained in the next section).
 
-*Python version 3.11 - recommended for running the app (https://apps.microsoft.com/store/detail/python-311/9NRWMJP3717K?hl=en-us&gl=us)
+*Python version 3.11 - recommended for running the app [Download from Microsoft store](https://apps.microsoft.com/store/detail/python-311/9NRWMJP3717K?hl=en-us&gl=us)
 
-*Installing requirements.txt - pip install requirements.txt.
 
 # Model Training
 
