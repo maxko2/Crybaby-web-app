@@ -9,7 +9,7 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
 2. Model Training
 3. App Installation
 
-# 1 Initial Requirements
+# Initial Requirements
 *Internet connection - for downloading the model automatically by the app and running a production server.
 
 *Trained model - h5 model file for predictions (explained in the next section).
@@ -18,6 +18,6 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
 
 *Installing requirements.txt - pip install requirements.txt.
 
-# 2 Model Training
+# Model Training
 
-# 3 App Installation
+# App Installation
