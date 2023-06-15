@@ -28,14 +28,13 @@
               <div class="form-border"></div>
               <br>
               <div style="margin-top:15px;">
-                <button id="startRecording" class="button light play-button "><span class="mif-mic icon-lg"></span></button>
-                <button id="stopRecording" class="button light icon-lg" disabled><i class="fas fa-stop"></i></button>
+                <button id="startRecording" class="button alert play-button "><span class="mif-mic icon-lg"></span></button>
+                <button id="stopRecording" class="button alert play-button" disabled><i class="fas fa-stop"></i></button>
               </div>
               
             </form>
             <div class="loading-container" id="loading-container" style="display: none;">
               {% include 'loading.html' %}
-              <p class="loading-text">Processing...</p>
             </div>
             <div id="prediction-result" {% if not file_chosen %} style="display: none;"{% endif %}></div>
             {% if result is defined %}
@@ -62,6 +61,27 @@
 
   </div>
   <script>
+
+    function showNotification(message) {
+      var notification = document.createElement('div');
+      notification.classList.add('custom-notification');
+
+      var icon = document.createElement('i');
+      icon.classList.add('fas', 'fa-exclamation-circle', 'icon');
+      notification.appendChild(icon);
+
+      var messageElement = document.createElement('span');
+      messageElement.textContent = message;
+      notification.appendChild(messageElement);
+
+      document.body.appendChild(notification);
+
+      setTimeout(function () {
+        notification.remove();
+      }, 3000);
+    }
+
+
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => { handlerFunction(stream) });
 
@@ -83,9 +103,20 @@
       form.append('newborn_name', newbornName);
       form.append('recording_name', recordingName);
       form.append('file', data, 'data');
-      fetch('/record', { method: 'POST', body: form })
+
+
+      fetch('/record', {
+        method: 'POST',
+        body: form
+      })
         .then(response => response.text())
         .then(result => {
+          if (result === 'Error') {
+            // Show custom notification for exceeding file size limit
+            showNotification('You exceeded free space on your account, please remove some recordings!');
+            return;
+          }
+          
           document.getElementById('prediction-result').innerHTML = `
             <div class="result-container">
               <div id="card-title">
@@ -100,8 +131,6 @@
             </div>
           `;
           document.getElementById('prediction-result').style.display = 'block'; // Show the prediction result
-          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
-          fileInput.value = null; // Reset the file input
         })
         .catch(error => {
           console.error('Error:', error);
@@ -110,6 +139,7 @@
         });
       
     }
+
     let audioChunks = [];
     let recTimeout;
     startRecording.onclick = e => {

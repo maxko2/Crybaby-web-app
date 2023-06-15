@@ -176,25 +176,30 @@
           });
       }
 
-      function deleteRecording(index) {
-        fetch(`/api/recordings/${index}`, {
-          method: 'DELETE',
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-            const remainingRows = document.querySelectorAll('#recording-table-body tr');
-            remainingRows.forEach((row) => {
-              const currentIndex = parseInt(row.getAttribute('data-index'));
-              if (currentIndex > index) {
-                row.setAttribute('data-index', currentIndex - 1);
-              }
-            });
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+function deleteRecording(index) {
+  fetch(`/api/recordings/${index}`, {
+    method: 'DELETE',
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      const remainingRows = document.querySelectorAll('#recording-table-body tr');
+      remainingRows.forEach((row) => {
+        const currentIndex = parseInt(row.getAttribute('data-index'));
+        if (currentIndex > index) {
+          row.setAttribute('data-index', currentIndex - 1);
+        }
+      });
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
 
       function playRecording(file, index) {
         // Stop any active recordings

@@ -13,7 +13,7 @@
       <!--div id="upload-form"-->
         <p>
           <div id="card-title">
-            <h2>Upload a recording</h2>
+            <h2>Upload a Recording</h2>
             <div class="underline-title"></div>
           </div>
           <div id="card-content">
@@ -37,7 +37,6 @@
             </form>
             <div class="loading-container" id="loading-container" style="display: none;">
               {% include 'loading.html' %}
-              <p class="loading-text">Processing...</p>
             </div>
             <div id="prediction-result" {% if not file_chosen %}style="display: none;"{% endif %}></div>
             {% if result is defined %}
@@ -99,6 +98,8 @@
       var fileSizeInBytes = file.size;
       var maxSizeInBytes = 2048 * 1024; // 2MB
 
+    
+
       if (fileSizeInBytes > maxSizeInBytes) {
         // Show custom notification for exceeding file size limit
         showNotification('You exceeded the file size limit!');
@@ -106,6 +107,7 @@
         document.getElementById('upload-button').style.display = 'none'; // Hide the upload button
         return;
       }
+
 
       document.getElementById('upload-button').style.display = 'block'; // Show the upload button
       document.getElementById('prediction-result').style.display = 'none'; // Hide the prediction result
@@ -136,6 +138,14 @@
       })
         .then(response => response.text())
         .then(result => {
+          if (result === 'Error') {
+            // Show custom notification for exceeding file size limit
+            showNotification('You exceeded free space on your account, please remove some recordings!');
+            fileInput.value = null; // Clear the file input
+            document.getElementById('upload-button').style.display = 'none'; // Hide the upload button
+            return;
+          }
+          
           document.getElementById('prediction-result').innerHTML = `
             <div class="result-container">
               <div id="card-title">
@@ -150,15 +160,20 @@
             </div>
           `;
           document.getElementById('prediction-result').style.display = 'block'; // Show the prediction result
-          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
-          fileInput.value = null; // Reset the file input
         })
         .catch(error => {
           console.error('Error:', error);
-          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
           document.getElementById('upload-button').style.display = 'block'; // Show the upload button (in case of error)
+        })
+        .finally(() => {
+          document.getElementById('loading-container').style.display = 'none'; // Hide the loading container
+          fileInput.value = null; // Reset the file input
         });
+      
+      
+      
     });
+  
   </script>
 </body>
 </html>

@@ -30,9 +30,9 @@
     filter: blur(4px);
   }
   .baby:before {
-    content: 'Loading....';
+    content: 'Processing....';
     position: absolute;
-    color: #fff;
+    color: #000000;
     font-size: 22px;
     top: 100%;
     left: 0;

@@ -5,6 +5,7 @@ from services.mongoDB import db
 from werkzeug.datastructures import FileStorage
 from datetime import datetime
 import os
+import bson
 record_bp = Blueprint('record', __name__ )
 
 @record_bp.route('/record', methods=['POST', 'GET'])
@@ -16,6 +17,7 @@ def record():
     # get current user newborns
     current_user = db.users.find_one({'username': session['username']})
     newborns = current_user['newborns']
+    document_size=len(bson.BSON.encode(current_user))
     if request.method == 'GET':
         return render_template("record.html", newborns=newborns)
     else:
@@ -25,6 +27,13 @@ def record():
         if file is None:
             # Return an error message if the file is not in the request
             return 'No file uploaded', 400
+            # Calculate the total size of the document and the file
+        total_size = document_size + file.content_length
+        print(f"Document current size: {total_size} bytes")  # Print the total size
+        # Check if the total size exceeds the limit (16MB)
+        if total_size > 14 * 1024 * 1024:
+            result="Error"
+            return result
 
         # Get the filename from the request object
         filename = request.form.get('filename')
