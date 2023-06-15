@@ -26,6 +26,14 @@ Welcome to **Crybaby**. This project aims to classify newborn cries into 3 diffe
 
 # Model Training
 
+ - Download a dataset or create your own - we used [donate-a-cry corpus dataset](https://github.com/gveres/donateacry-corpus). Important to note we used the **cleaned and updated version**.
+ - We combined burping and belly pain with discomfort and came up with 3 final labels - **Discomfort**, **Tiredness** and **Hunger**.
+ - The dataset is unbalanced and 2 out of the 3 labels have very few audio samples - this will require augmentations to expand those labels and dataset.
+ - Create a folder on you Google drive and upload the dataset folders in this way:
+ ![](https://i.imgur.com/v5RGZ2F.png)
+ - Create 2 additional folders (**Exported model** and **Spectrograms**).
+ - 
+
 # App Installation
 Clone repo:
 
@@ -71,7 +79,7 @@ Install requirements.txt:
  Use Ngrok to create free public domain and listen to your port [Ngrok download](https://ngrok.com/download).
  
     ngrok.exe http 5000
-    ![](https://i.imgur.com/YRGSWly.png)
+   ![](https://i.imgur.com/YRGSWly.png)
 
 
 
