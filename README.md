@@ -1,5 +1,5 @@
 # App introduction 👶
-Welcome to the Newborn Cries Classification Web App repository! This project aims to classify newborn cries into 3 different categories (Tiredness, Hunger and Discomfort) using machine learning techniques utilizing audio files visual representation in the form of spectrograms. The web app provides an intuitive interface for users to record and analyze the cries of newborns, helping parents and caregivers gain insights into their baby's needs.
+Welcome to **Crybaby**. This project aims to classify newborn cries into 3 different categories (Tiredness, Hunger and Discomfort) using machine learning techniques utilizing audio files visual representation in the form of spectrograms. The web app provides an intuitive interface for users to record and analyze the cries of newborns, helping parents and caregivers gain insights into their baby's needs.
 
 
 ![image](https://github.com/maxko2/Crybaby-web-app/assets/49914498/51c0b2ef-26df-43a9-af8d-2c16cbf669c8)
@@ -13,13 +13,16 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
  - Internet connection - for downloading the model automatically by the app and running a production server.
  - Trained model - h5 model file for predictions (explained in the next section).
  - Python version 3.11 - recommended for running the app [Download from Microsoft 
-          store](https://apps.microsoft.com/store/detail/python-311/9NRWMJP3717K?hl=en-us&gl=us)
+          store](https://apps.microsoft.com/store/detail/python-311/9NRWMJP3717K?hl=en-us&gl=us).
           
  - ffmpeg installed - [Download from official 
-         website](https://ffmpeg.org/download.html)
+         website](https://ffmpeg.org/download.html).
          
  - Add ffmpeg path to System Environment Variables in the Path section 
- ![image](https://imgur.com/a/JvoSjIs)
+ ![image](https://i.imgur.com/7jjHdyn.png)
+ 
+ - MongoDB database - make sure to have Atlas account (for online database) or create localhost database (for local database) [MongoDB website](https://www.mongodb.com).
+
 
 # Model Training
 
@@ -33,3 +36,43 @@ Install requirements.txt:
     pip install requirements.txt
    
 
+## Run app locally in development server
+
+ - Create a localhost connection on MongoDB - recommended to use MongoDB Compass [MongoDB Compass](https://www.mongodb.com/try/download/compass).
+ 
+![image](https://i.imgur.com/BGQXkiJ.png)
+ - Connect to localhost.
+ - On Crybaby.py and services.mongoDB.py use localhost connection string ('mongodb://localhost:27017/').
+ ![](https://i.imgur.com/duk7Iv0.png)
+ 
+ - Run Crybaby.py - using either **app.run(debug=True)** or **app.run(debug=True,host="0.0.0.0")**.
+ - Wait for model file to download.
+ - To start the app connect to **localhost:5000** or the **generated links(s)** - a database will be created with the name **Crybaby** and the collection **users**. If for some reason you are encountering a problem, create those manually.
+![](https://i.imgur.com/8mhbRdy.png)
+ 
+## Run app in production server
+ 
+ - Open port 5000 or any other port you wish to be using, on your router interface.
+ - Create a connection on MongoDB with **Atlas connection string** - recommended to use MongoDB Compass [MongoDB Compass](https://www.mongodb.com/try/download/compass).
+![](https://i.imgur.com/e8NVaSt.png)
+ - Connect to your database.
+ - On Crybaby.py and services.mongoDB.py use your Atlas connection string - **follow local server instructions**.
+ -  Run Crybaby.py - using **serve(app, host='0.0.0.0', port=5000)** 
+ - Wait for model file to download.
+ - To start the app connect to **localhost:5000** or the **generated links(s)** - a database will be created with the name **Crybaby** and the collection **users**. If for some reason you are encountering a problem, create those manually.
+ - For others users to connect to your app use **external_ip:port**:
+ **external_ip**=[find your external ip](https://whatismyipaddress.com)
+ **port**=5000(default)
+ 
+ **Alternative:**
+ Run server.bat
+ 
+**Optional:**
+ Use Ngrok to create free public domain and listen to your port [Ngrok download](https://ngrok.com/download).
+ 
+    ngrok.exe http 5000
+    ![](https://i.imgur.com/YRGSWly.png)
+
+
+
+    
