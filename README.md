@@ -20,3 +20,7 @@ Welcome to the Newborn Cries Classification Web App repository! This project aim
 # Model Training
 
 # App Installation
+1. Clone repo:
+'''
+git clone https://github.com/maxko2/Crybaby-web-app
+'''
