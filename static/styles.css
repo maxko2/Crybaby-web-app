@@ -581,7 +581,7 @@ h3 {
   color: #337ab7;
 }
 #largecard {
-  width: 600px; /* Adjust the width as needed for smaller screens */
+  width: 100%; /* Adjust the width as needed for smaller screens */
   margin: 3rem auto 3rem auto;
   height: 100%; /* Adjust the margin as needed for smaller screens */
 
