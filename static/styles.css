@@ -79,8 +79,8 @@ label {
   padding: 25px;
   border: 2px solid darksalmon;
 
-
 }
+
 #card2{
   background: #fbfbfb;
   border-radius: 8px;
@@ -144,7 +144,7 @@ label {
   text-decoration: none;
   font-size: 16px;
   border-radius: 12px;
-  margin-right: 15px;
+  margin-right: 35px;
 }
 
 .play-button:before {
@@ -487,4 +487,119 @@ h3 {
   top: 50%; 
   left: 50%; 
   transform: translate(-50%, -50%); 
+}
+
+/*Navbar*/
+.sidebar {
+  width: 260px;
+  transition: width 0.3s ease;
+}
+
+.sidebar-active {
+  width: 260px;
+}
+
+@media (max-width: 640px) {
+  /* Adjust sidebar and content container for small screens */
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    width: 260px;
+    height: 550px;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  /* Hide the sidebar on small screens */
+  .sidebar-active {
+    display: none;
+  }
+
+  /* Move the content container to the left to fill the space where the sidebar was */
+  .shifted-content {
+    transition: margin-left 0.3s ease;
+  }
+
+  /* Restore the content container to its original position when the sidebar is opened */
+  .content-active {
+    margin-left: 0;
+  }
+
+/* Team page*/
+.quote-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.quote {
+  font-family: 'Indie Flower', cursive;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.our-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pic img {
+  max-width: 100%;
+}
+
+.content {
+  text-align: center;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.social {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+.social li {
+  margin: 0 5px;
+}
+
+.social a {
+  font-size: 24px;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.social a:hover {
+  color: #337ab7;
+}
+#largecard {
+  width: 600px; /* Adjust the width as needed for smaller screens */
+  margin: 3rem auto 3rem auto;
+  height: 100%; /* Adjust the margin as needed for smaller screens */
+
+}
+.background {
+  height: 100%;
+  margin: 0;
+  background-image: url('/static/background-phone.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.95;
+}
+#largecard >  * {
+  margin-bottom:1rem ;
+}
+#card-content>* {
+  margin-bottom:2rem
+}
+
+
 }

@@ -23,15 +23,15 @@
     </button>
   </div>
 </div>
-
 <script>
   const sidebarToggle = document.querySelector('#sidebar-toggle-3');
   const sidebar = document.querySelector('#sb3');
-  const contentContainer = document.querySelector('.content-container');
+  const contentContainer = document.querySelector('#shifted-content');
   sidebarToggle.addEventListener('click', function() {
     if (sidebar && contentContainer) {
       sidebar.classList.toggle('sidebar-active');
-      contentContainer.classList.toggle('content-active');
+      contentContainer.classList.toggle('sidebar-shifted');
     }
   });
 </script>
+

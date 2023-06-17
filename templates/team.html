@@ -1,78 +1,114 @@
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Team Showcase</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <style>
-        .quote-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        
-        .quote {
-            font-family: 'Indie Flower', cursive;
-            font-size: 20px;
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Team Showcase</title>
+  <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-all.min.css">
+  <style>
+    .quote-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .quote {
+      font-family: 'Indie Flower', cursive;
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .our-team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .pic img {
+      max-width: 100%;
+    }
+
+    .content {
+      text-align: center;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+
+    .social {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+    }
+
+    .social li {
+      margin: 0 5px;
+    }
+
+    .social a {
+      font-size: 24px;
+      color: #000;
+      transition: color 0.3s ease;
+    }
+
+    .social a:hover {
+      color: #337ab7;
+    }
+
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 </head>
+
 <body>
-<div class="container">
-    <div class="row justify-content-center">
-        <div style="width: 15%;">
-            <div class="our-team">
-                <div class="pic">
-                    <img src="\static\daniel.png" alt="team member" class="img-responsive">
-                </div>
-                <div class="content">
-                    <h3 class="title">Daniel Uralsky</h3>
-                    <span class="post">Co-Developer</span>
-                    <ul class="social">
-                        <li><a href="https://www.linkedin.com/in/daniel-uralsky/" class="fa fa-linkedin"></a></li>
-                    </ul>
-                </div>
-            </div>
+  <div class="container">
+    <div class="row">
+      <div class="cell-md-4">
+        <div class="our-team">
+          <div class="pic">
+            <img src="\static\daniel.png" alt="team member">
+          </div>
+          <div class="content">
+            <h3 class="title">Daniel Uralsky</h3>
+            <span class="post">Co-Developer</span>
+            <ul class="social">
+              <li><a href="https://www.linkedin.com/in/daniel-uralsky/" class="fa fa-linkedin"></a></li>
+            </ul>
+          </div>
         </div>
+      </div>
 
-        <div style="width: 50%;">
-            <div class="quote-container">
-                <div class="quote">
-                    "Children are the world's most valuable resource and its best hope for the future." - John F. Kennedy
-                </div>
+      <div class="cell-md-4">
+        <div class="quote-container">
+          <div class="quote">
+            "Children are the world's most valuable resource and its best hope for the future." - John F. Kennedy
+          </div>
+        </div>
+      </div>
 
-            </div>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <div class="baby-container">
-                {% include 'baby.html' %}
-            </div>
+      <div class="cell-md-4">
+        <div class="our-team">
+          <div class="pic">
+            <img src="\static\max.png" alt="team member">
+          </div>
+          <div class="content">
+            <h3 class="title">Maxim Kobzer</h3>
+            <span class="post">Co-Developer</span>
+            <ul class="social">
+              <li><a href="https://www.linkedin.com/in/max-kobzer-585a2618b/" class="fa fa-linkedin"></a></li>
+            </ul>
+          </div>
         </div>
-        
-        <div style="width: 15%;">
-            <div class="our-team">
-                <div class="pic">
-                    <img src="\static\max.png" alt="team member" class="img-responsive">
-                </div>
-                <div class="content">
-                    <h3 class="title">Maxim Kobzer</h3>
-                    <span class="post">Co-Developer</span>
-                    <ul class="social">
-                        <li><a href="https://www.linkedin.com/in/max-kobzer-585a2618b/" class="fa fa-linkedin"></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.metroui.org.ua/v4/js/metro.min.js"></script>
 </body>
+
 </html>
