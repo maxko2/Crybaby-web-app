@@ -58,18 +58,20 @@ Install requirements.txt:
  - To start the app connect to **localhost:5000** or the **generated links(s)** - a database will be created with the name **Crybaby** and the collection **users**. If for some reason you are encountering a problem, create those manually.
 ![](https://i.imgur.com/8mhbRdy.png)
  
-## Run app in production server
+## Run app locally in production server
  
  - Open port 5000 or any other port you wish to be using, on your router interface.
- - Create a connection on MongoDB with **Atlas connection string** - recommended to use MongoDB Compass [MongoDB Compass](https://www.mongodb.com/try/download/compass).
+ - Create a connection on MongoDB with **Atlas connection string** (or use localhost) - recommended to use MongoDB Compass [MongoDB Compass](https://www.mongodb.com/try/download/compass).
 ![](https://i.imgur.com/e8NVaSt.png)
  - Connect to your database.
- - On Crybaby.py and services.mongoDB.py use your Atlas connection string - **follow local server instructions**.
+ - On Crybaby.py and services.mongoDB.py use your Atlas connection string (or localhost string) - **follow local server instructions**.
  -  Run Crybaby.py - using **serve(app, host='0.0.0.0', port=5000)** 
  - Wait for model file to download.
  - To start the app connect to **localhost:5000** or the **generated links(s)** - a database will be created with the name **Crybaby** and the collection **users**. If for some reason you are encountering a problem, create those manually.
  - For others users to connect to your app use **external_ip:port**:
+ 
  **external_ip**=[find your external ip](https://whatismyipaddress.com)
+ 
  **port**=5000(default)
  
  **Alternative:**
