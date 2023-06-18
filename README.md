@@ -63,6 +63,7 @@ Install requirements.txt:
  
  - Open port 5000 or any other port you wish to be using, on your router interface.
  - Create a connection on MongoDB with **Atlas connection string** (or use localhost) - recommended to use MongoDB Compass [MongoDB Compass](https://www.mongodb.com/try/download/compass).
+ 
 ![](https://i.imgur.com/e8NVaSt.png)
  - Connect to your database.
  - On Crybaby.py and services.mongoDB.py use your Atlas connection string (or localhost string) - **follow local server instructions**.
