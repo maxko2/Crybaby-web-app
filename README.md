@@ -29,10 +29,16 @@ Welcome to **Crybaby**. This project aims to classify newborn cries into 3 diffe
  - Download a dataset or create your own - we used [donate-a-cry corpus dataset](https://github.com/gveres/donateacry-corpus). Important to note we used the **cleaned and updated version**.
  - We combined burping and belly pain with discomfort and came up with 3 final labels - **Discomfort**, **Tiredness** and **Hunger**.
  - The dataset is unbalanced and 2 out of the 3 labels have very few audio samples - this will require augmentations to expand those labels and dataset.
- - Create a folder on you Google drive and upload the dataset folders in this way:
+ - Create a folder on you Google Drive and upload the dataset folders in this way:
  ![](https://i.imgur.com/v5RGZ2F.png)
  - Create 2 additional folders (**Exported model** and **Spectrograms**).
- - 
+ - Make a copy of this Google Colab notebook [Crybaby model](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=ZWXv5pPWyQIg).
+ - Follow the step by step guide to create and train the model.
+ ## Step-by-step guide for creating and training the model
+ 
+ - Set the WAV files directory to your **dataset** path, the results path to your **Spectrograms** path.
+ - Run the code block to mount your Google Drive to the Google Colab notebook and to save the paths.
+ ![](https://imgur.com/a/rkzyf9A)
 
 # App Installation
 Clone repo:
