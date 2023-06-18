@@ -74,10 +74,16 @@ Install requirements.txt:
  
  **port**=5000(default)
  
- **Alternative:**
- Run server.bat
  
-**Optional:**
+
+## **Alternative:**
+
+ Run server.bat.
+ 
+
+
+## Optional
+
  Use Ngrok to create free public domain and listen to your port [Ngrok download](https://ngrok.com/download).
  
     ngrok.exe http 5000
