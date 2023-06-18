@@ -101,7 +101,7 @@ Install requirements.txt:
  -  Run Crybaby.py - using **serve(app, host='0.0.0.0', port=5000)** 
  - Wait for model file to download.
  - To start the app connect to **localhost:5000** or the **generated links(s)** - a database will be created with the name **Crybaby** and the collection **users**. If for some reason you are encountering a problem, create those manually.
- - For others users to connect to your app use **external_ip:port**:
+ - For other users to connect to your app use **external_ip:port**:
  
  **external_ip**=[find your external ip](https://whatismyipaddress.com)
  
