@@ -36,53 +36,32 @@ Welcome to **Crybaby**. This project aims to classify newborn cries into 3 diffe
  - Follow the step by step guide to create and train the model.
  ## Step-by-step guide for creating and training the model
  
- - Set the WAV files directory to your **dataset** path, the results path to your **Spectrograms** path.
- - Run the code block to mount your Google Drive to the Google Colab notebook and to save the paths.
-[Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=kkQlKiqy8_Yp&line=6&uniqifier=1).
- - In the next code block the labels with very few samples will be augmented. Audio files are augmented using the `audiomentations` library, applying transformations like Gaussian SNR, pitch shifting, time stretching, and normalization. Augmented files are saved in the same directory with a suffix.
- - Run the code block to define the augmentation function.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=Q3Jd4BP_GcFs&line=7&uniqifier=1).
- - Next code block sets sample rate and duration parameters, performs data augmentation on specific subdirectories, loads WAV files, adjusts their duration, computes spectrograms for each window with overlap, and saves the spectrograms as images using the 'Magma' color map.
- - You can modify the augmented labels which are preset to "Tiredness" and "Discomfort".
- - Run this code block only for the **first time!** 
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=JvtDnJ0-Jlbs&line=3&uniqifier=1).
- 
- - The next code block defines a label-to-index mapping for the model's classes, sets paths for each label category, loads images from the specified paths, defines functions to load and display images, and initializes empty lists for storing image data and labels.
- - Run the code block to define your labels and change the labels paths if needed.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=rn9aYB375aZq&line=35&uniqifier=1).
- 
- - Run next 3 code blocks to load files according to the label.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=d6oK-vjP54WS&line=3&uniqifier=1)
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=T3oBv0Mh-yqU&line=2&uniqifier=1)
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=0G3qNX6V-4OW&line=1&uniqifier=1)
- 
- - The next code block performs train-test split on `x` and `y` data with stratification, normalizes the training and testing data, and encodes the training and testing labels using one-hot encoding.
- - Run the code block - you can modify the test set size according to your dataset size (we used 20%).
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=lPnataEA07kH&line=1&uniqifier=1).
- 
- - Run one of the model versions (Compact or Regular) to create the model - you can use any other model you wish.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=XcBpVhexEHGT&line=1&uniqifier=1).
- 
- - Next code block trains a model using the training data and evaluates its performance, plots the training and validation accuracy over epochs, saves the accuracy plot as an image, evaluates the model's loss and accuracy on the test data, generates a confusion matrix based on the model's predictions, and visualizes the confusion matrix as a heatmap plot.
- - You can modify the hyperparameters to suit you best and run the code block (make sure to change path to save the model plot).
-  [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=ZWu43-5A4gxZ&line=7&uniqifier=1).
- - Save the model in the path you wish and the name you wish.
- - ## Optional
- To test the model on unseen data follow these steps:
- 
- - Place your unseen data samples in a new folder on your Google Drive.
- - Define in the next code block the path for the unseen data samples and the results path and run the code block.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=R3z9Kj5uENIn&line=5&uniqifier=1).
- 
- - The next code block will create spectrograms out of the unseen data.
- - Run the code block - no augmentatios needed for unseen data.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=zC7VZUkpDwhE&line=1&uniqifier=1).
- 
- - The next code block loads and processes images from a specified directory, resizes them to a specific input size, converts them to numpy arrays, and then uses a trained model to predict labels for the images. The predictions, along with the filenames and corresponding labels, are written to a CSV file, and the results are printed for each image.
- - Make sure to change the results path for the CSV file and run the code block.
- [Press to see code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=ZWXv5pPWyQIg&line=47&uniqifier=1).
- 
- - Open the CSV file to evaluate your model performance.
+-   Set the WAV files directory to your **dataset** path and the results path to your **Spectrograms** path. Then run the code block to mount your Google Drive and save the paths. [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=kkQlKiqy8_Yp&line=6&uniqifier=1).
+    
+-   Run the code block to augment labels with very few samples using the `audiomentations` library, which applies transformations like Gaussian SNR, pitch shifting, time stretching, and normalization. The augmented files will be saved in the same directory with a suffix. [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=Q3Jd4BP_GcFs&line=7&uniqifier=1).
+    
+-   Set sample rate and duration parameters, perform data augmentation on specific subdirectories, load WAV files, adjust their duration, compute spectrograms for each window with overlap, and save the spectrograms as images using the 'Magma' color map. You can modify the augmented labels, which are preset to "Tiredness" and "Discomfort". Run this code block only for the **first time!** [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=JvtDnJ0-Jlbs&line=3&uniqifier=1).
+    
+-   Define a label-to-index mapping for the model's classes, set paths for each label category, load images from the specified paths, define functions to load and display images, and initialize empty lists for storing image data and labels. Run the code block to define your labels and change the label paths if needed. [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=rn9aYB375aZq&line=35&uniqifier=1).
+    
+-   Run the next 3 code blocks to load files according to the label. [Code 1](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=d6oK-vjP54WS&line=3&uniqifier=1), [Code 2](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=T3oBv0Mh-yqU&line=2&uniqifier=1), [Code 3](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=0G3qNX6V-4OW&line=1&uniqifier=1).
+    
+-   Perform train-test split on `x` and `y` data with stratification, normalize the training and testing data, and encode the training and testing labels using one-hot encoding. Run the code block to perform the split (you can modify the test set size according to your dataset size, we used 20%). [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=lPnataEA07kH&line=1&uniqifier=1).
+    
+-   Run one of the model versions (Compact or Regular) to create the model. You can use any other model you wish. [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=XcBpVhexEHGT&line=1&uniqifier=1).
+    
+-   Train the model using the training data, evaluate its performance, plot the training and validation accuracy over epochs, save the accuracy plot as an image, evaluate the model's loss and accuracy on the test data, generate a confusion matrix based on the model's predictions, and visualize the confusion matrix as a heatmap plot. You can modify the hyperparameters to suit your needs and run the code block (remember to change the path to save the model plot). [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=ZWu43-5A4gxZ&line=7&uniqifier=1).
+    
+-   Save the model in the desired path and with the desired name.
+    
+-   **Optional:** To test the model on unseen data, follow these steps:
+    
+    1.  Place your unseen data samples in a new folder on your Google Drive.
+    2.  Define the path for the unseen data samples and the results path in the next code block and run the code block. [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=R3z9Kj5uENIn&line=5&uniqifier=1).
+    3.  The next code block will create spectrograms out of the unseen data. Run the code block (no augmentations needed for unseen data). [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=zC7VZUkpDwhE&line=1&uniqifier=1).
+    4.  The next code block loads and processes images from a specified directory, resizes them to a specific input size, converts them to numpy arrays, and uses a trained model to predict labels for the images. The predictions, filenames, and corresponding labels are written to a CSV file, and the results are printed for each image. Make sure to change the results path for the CSV file and run the code block. [Code](https://colab.research.google.com/drive/1B4__lcx4jVSa0GyM7LuUFc3F71G0ot5w?authuser=1#scrollTo=ZWXv5pPWyQIg&line=47&uniqifier=1).
+    5.  Open the CSV file to evaluate your model's performance.
+
 
  
 
