@@ -48,6 +48,7 @@ Install requirements.txt:
 
  - Create a localhost connection on MongoDB - recommended to use MongoDB Compass [MongoDB Compass](https://www.mongodb.com/try/download/compass).
  
+ 
 ![image](https://i.imgur.com/BGQXkiJ.png)
  - Connect to localhost.
  - On Crybaby.py and services.mongoDB.py use localhost connection string ('mongodb://localhost:27017/').
