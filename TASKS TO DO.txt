@@ -1,8 +1,0 @@
-1. Fix recording page and add components
-2. Combine upload/record pages with results page and delete results page
-3. Transfer all styles from html files to styles.css and make them generic
-4. Add styles to suit our website theme
-5. Add background image to pages
-6. Using the functions in the main file to update the db with the interpreted file and its label + the recording
-7. Create history page to show past recordings with relevant info
-8. In the user page add the functionality to update user's credentials
