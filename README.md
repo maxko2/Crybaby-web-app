@@ -123,5 +123,9 @@ Install requirements.txt:
    ![](https://i.imgur.com/YRGSWly.png)
 
 
+## Optional for future model training
+To easily extract recordings as wav files from the DB - Export JSON file of "users" collection from MongoDB and run extractRecordings.py.
+Make sure to export **full collection** and select **all fields** - save as a **JSON file**.
+**Only recordings classified as "correct" would be exported!**
 
     
