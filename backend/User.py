@@ -1,5 +1,6 @@
 
 from flask import Blueprint, render_template, request, session, redirect, url_for
+from services.mongoDB import users_collection
 
 
 user_bp = Blueprint('user', __name__ )
@@ -14,7 +15,7 @@ def user():
     else:
         new_password = request.form['password']
         new_email = request.form['email']
-        users = user_bp.mongo.db.users
+        users = users_collection
         users.update_one({'username': session['username']}, {'$set': { 'password': new_password, 'email': new_email}}) 
         session['password'] = new_password
         session['email']=  new_email
