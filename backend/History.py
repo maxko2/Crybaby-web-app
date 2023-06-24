@@ -48,9 +48,8 @@ def history_post():
 
 
 
-@history_bp.route('/api/recordings', methods=['GET'])
-def get_recordings():
-    newborn_name = request.args.get('newborn_name')
+@history_bp.route('/api/recordings/<newborn_name>', methods=['GET'])
+def get_recordings(newborn_name):
     current_user = db.users.find_one({'username': session['username'], 'newborns.name': newborn_name})
     if current_user:
         newborn = next((newborn for newborn in current_user['newborns'] if newborn['name'] == newborn_name), None)
@@ -80,40 +79,47 @@ def get_recordings():
 
 
     
-@history_bp.route('/api/recordings/<int:index>/feedback', methods=['POST'])
-def update_feedback(index):
+@history_bp.route('/api/recordings/<newborn_name>/<int:index>/feedback', methods=['POST'])
+def update_feedback(newborn_name, index):
     feedback = request.form.get('feedback')
-    current_user = db.users.find_one({'username': session['username'], 'newborns.recordings': {'$exists': True}})
+    current_user = db.users.find_one({'username': session['username'], 'newborns.name': newborn_name})
     if current_user:
-        newborns = current_user['newborns']
-        for newborn in newborns:
+        newborn = next((newborn for newborn in current_user['newborns'] if newborn['name'] == newborn_name), None)
+        if newborn:
             recordings = newborn.get('recordings', [])
             if index < len(recordings):
                 recording = recordings[index]
                 recording['feedback'] = feedback
                 db.users.update_one(
-                    {'username': session['username'], 'newborns.name': newborn['name']},
+                    {'username': session['username'], 'newborns.name': newborn_name},
                     {'$set': {'newborns.$.recordings': recordings}}
                 )
                 return jsonify({"success": True})
-        return jsonify({"error": "Recording not found"}), 404
+            else:
+                return jsonify({"error": "Recording not found"}), 404
+        else:
+            return jsonify({"error": "Newborn not found"}), 404
     else:
         return jsonify({"error": "User not found"}), 404
+
     
-@history_bp.route('/api/recordings/<int:index>', methods=['DELETE'])
-def delete_recording(index):
-    current_user = db.users.find_one({'username': session['username'], 'newborns.recordings': {'$exists': True}})
+@history_bp.route('/api/recordings/<newborn_name>/<int:index>', methods=['DELETE'])
+def delete_recording(newborn_name, index):
+    current_user = db.users.find_one({'username': session['username'], 'newborns.name': newborn_name})
     if current_user:
-        newborns = current_user['newborns']
-        for newborn in newborns:
+        newborn = next((newborn for newborn in current_user['newborns'] if newborn['name'] == newborn_name), None)
+        if newborn:
             recordings = newborn.get('recordings', [])
             if index < len(recordings):
                 recordings.pop(index)
                 db.users.update_one(
-                    {'username': session['username'], 'newborns.name': newborn['name']},
+                    {'username': session['username'], 'newborns.name': newborn_name},
                     {'$set': {'newborns.$.recordings': recordings}}
                 )
                 return jsonify({"success": True})
-        return jsonify({"error": "Recording not found"}), 404
+            else:
+                return jsonify({"error": "Recording not found"}), 404
+        else:
+            return jsonify({"error": "Newborn not found"}), 404
     else:
         return jsonify({"error": "User not found"}), 404

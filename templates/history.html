@@ -14,8 +14,8 @@
           <div class="underline-title"></div>
         </div>
         <br>
-        <label for="newborn_name" id="newborn-select">Pick a newborn:</label>             
-        <select name="newborn_name" >
+        <label for="newborn_name" id="newborn-select">Pick a newborn:</label>
+        <select name="newborn_name">
           <option value="" disabled selected hidden></option>
           {% for n in newborns %}
           <option value="{{ n['name'] }}">{{ n['name'] }}</option>
@@ -47,11 +47,17 @@
 
       newbornDropdown.addEventListener('change', async (event) => {
         const selectedNewbornName = event.target.value;
+
+        const newbornOptions = Array.from(newbornDropdown.options);
+        const newbornIndex = newbornOptions.findIndex(
+          (option) => option.value === selectedNewbornName
+        )-1;
         // clear existing table rows
         recordingTableBody.innerHTML = '';
         // Fetch recordings for selected newborn
         try {
-          const response = await fetch(`/api/recordings?newborn_name=${selectedNewbornName}`);
+          const response = await fetch(`/api/recordings/${selectedNewbornName}`);
+
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -123,9 +129,9 @@
             deleteButton.classList.add('mif-bin');
 
             deleteButton.addEventListener('click', () => {
-              deleteRecording(parseInt(tr.getAttribute('data-index')));
-              tr.remove(); // Remove the row from the table
-            });
+              deleteRecording(index, newbornIndex, selectedNewbornName); // Pass selectedNewbornName as an argument
+      tr.remove(); // Remove the row from the table
+      });
             tdDelete.appendChild(deleteButton);
             tr.appendChild(tdDelete);
 
@@ -142,42 +148,41 @@
               }
             }
 
-            feedbackButtonV.addEventListener('click', () => {
-              updateFeedback('correct', index);
-              feedbackButtonV.style.opacity = '1';
-              feedbackButtonX.style.opacity = '0.3';
-            });
-
-            feedbackButtonX.addEventListener('click', () => {
-              updateFeedback('incorrect', index);
-              feedbackButtonV.style.opacity = '0.3';
-              feedbackButtonX.style.opacity = '1';
-            });
+           feedbackButtonV.addEventListener('click', () => {
+            feedbackButtonV.style.opacity = '1';
+            feedbackButtonX.style.opacity = '0.3';
+            updateFeedback('correct', index, newbornIndex, selectedNewbornName); // Pass selectedNewbornName as an argument
           });
-        } catch (error) {
-          console.error('There has been a problem with your fetch operation:', error);
-        }
-      });
 
-      function updateFeedback(feedback, index) {
-        fetch(`/api/recordings/${index}/feedback`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `feedback=${feedback}`,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((error) => {
-            console.error('Error:', error);
+          feedbackButtonX.addEventListener('click', () => {
+            feedbackButtonV.style.opacity = '0.3';
+            feedbackButtonX.style.opacity = '1';
+            updateFeedback('incorrect', index, newbornIndex, selectedNewbornName); // Pass selectedNewbornName as an argument
           });
+        });
+      } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
       }
+    });
+    function updateFeedback(feedback, index, newbornIndex, selectedNewbornName) {
+      const response = fetch(`/api/recordings/${selectedNewbornName}/${index}/feedback`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `feedback=${feedback}`,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
 
-function deleteRecording(index) {
-  fetch(`/api/recordings/${index}`, {
+function deleteRecording(index, newbornIndex, selectedNewbornName) {
+  fetch(`/api/recordings/${selectedNewbornName}/${index}`, {
     method: 'DELETE',
   })
     .then((response) => {
@@ -201,72 +206,72 @@ function deleteRecording(index) {
     });
 }
 
-      function playRecording(file, index) {
-        // Stop any active recordings
-        stopAllRecordings();
+function playRecording(file, index) {
+  // Stop any active recordings
+  stopAllRecordings();
 
-        // Convert the BinData to a Blob
-        const binData = atob(file);
-        const buffer = new ArrayBuffer(binData.length);
-        const view = new Uint8Array(buffer);
-        for (let i = 0; i < binData.length; i++) {
-          view[i] = binData.charCodeAt(i);
-        }
-        const blob = new Blob([view], { type: 'audio/wav' });
+  // Convert the BinData to a Blob
+  const binData = atob(file);
+  const buffer = new ArrayBuffer(binData.length);
+  const view = new Uint8Array(buffer);
+  for (let i = 0; i < binData.length; i++) {
+    view[i] = binData.charCodeAt(i);
+  }
+  const blob = new Blob([view], { type: 'audio/wav' });
 
-        // Create a new audio element if it doesn't exist for the recording
-        if (!recordingInstances[index]) {
-          recordingInstances[index] = new Audio();
-          recordingInstances[index].controls = true;
-          recordingInstances[index].autoplay = true;
-        }
+  // Create a new audio element if it doesn't exist for the recording
+  if (!recordingInstances[index]) {
+    recordingInstances[index] = new Audio();
+    recordingInstances[index].controls = true;
+    recordingInstances[index].autoplay = true;
+  }
 
-        // Set the source of the audio element to the Blob URL
-        recordingInstances[index].src = URL.createObjectURL(blob);
+  // Set the source of the audio element to the Blob URL
+  recordingInstances[index].src = URL.createObjectURL(blob);
 
-        // Append the audio element to the page
-        const audioContainer = document.getElementById('audio-container');
-        audioContainer.innerHTML = '';
-        audioContainer.appendChild(recordingInstances[index]);
+  // Append the audio element to the page
+  const audioContainer = document.getElementById('audio-container');
+  audioContainer.innerHTML = '';
+  audioContainer.appendChild(recordingInstances[index]);
 
-        // Add an event listener to change the button back to the play icon when the audio ends
-        recordingInstances[index].addEventListener('ended', () => {
-          const playButton = document.getElementById(`play-button-${index}`);
-          const playIcon = document.createElement('span');
-          playIcon.classList.add('mif-play');
-          playButton.innerHTML = '';
-          playButton.appendChild(playIcon);
-          playButton.classList.remove('playing'); // Remove the "playing" class
+  // Add an event listener to change the button back to the play icon when the audio ends
+  recordingInstances[index].addEventListener('ended', () => {
+    const playButton = document.getElementById(`play-button-${index}`);
+    const playIcon = document.createElement('span');
+    playIcon.classList.add('mif-play');
+    playButton.innerHTML = '';
+    playButton.appendChild(playIcon);
+    playButton.classList.remove('playing'); // Remove the "playing" class
 
-          // Remove the audio element from the page
-          audioContainer.innerHTML = '';
+    // Remove the audio element from the page
+    audioContainer.innerHTML = '';
 
-          // Reset the audio source
-          recordingInstances[index].src = '';
+    // Reset the audio source
+    recordingInstances[index].src = '';
 
-          // Reset the recording instance
-          recordingInstances[index] = null;
-        });
+    // Reset the recording instance
+    recordingInstances[index] = null;
+  });
+}
+
+    function stopRecording(index) {
+      if (recordingInstances[index]) {
+        const audio = recordingInstances[index];
+        audio.pause();
+        audio.currentTime = 0;
       }
+    }
 
-      function stopRecording(index) {
-        if (recordingInstances[index]) {
-          const audio = recordingInstances[index];
+    function stopAllRecordings() {
+      recordingInstances.forEach((audio) => {
+        if (audio) {
           audio.pause();
           audio.currentTime = 0;
         }
-      }
-
-      function stopAllRecordings() {
-        recordingInstances.forEach((audio) => {
-          if (audio) {
-            audio.pause();
-            audio.currentTime = 0;
-          }
-        });
-      }
-    </script>
-  </div>
+      });
+    }
+  </script>
+</div>
 </div>
 </div>
 </body>

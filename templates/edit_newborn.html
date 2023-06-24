@@ -1,50 +1,108 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     {% include 'links.html' %}
     <title>Edit newborn</title>
-  </head>
-  <body class="background">
-    <div class="h-100 p-4">
-      {% include 'navbar.html' %}
-      <div id="card2">
+</head>
+<body class="background">
+<div class="h-100 p-4">
+    {% include 'navbar.html' %}
+    <div id="card2">
         <div id="card-content">
-          <div id="card-title">
-            <h2>Edit newborn</h2>
-            <div class="underline-title"></div>
-          </div>
-          <div class="notificationNote">
-            <i class="fa fa-exclamation-circle"></i>
-            <p style="font-size:0.8rem; text-align: center;"><b>Edit fields to change and press Save Changes!</b></p>
-        </div>
-        <form action="{{ url_for('edit.edit_newborn', index=index) }}" method="POST">
-          <input type="hidden" name="_method" value="PUT">
-          <label for="name" style="display: block; padding-top: 13px; font-weight: bold;">
-            &nbsp;Name
-          </label>
-          <input type="text" name="name" value="{{ newborn['name'] }}" class="form-content">
-          <div class="form-border"></div>
-          <div class="form-group">
-            <label for="birthdate" style="display: block; padding-top: 13px; font-weight: bold;">
-              &nbsp;Birthdate
-            </label>
-            <div class="input-wrapper">
-              <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{ newborn['birthdate'] }}" class="form-content">
-              <div class="form-border"></div>
+            <div id="card-title">
+                <h2>Edit newborn</h2>
+                <div class="underline-title"></div>
             </div>
-          </div>
-          <label for="gender" style="display: block; padding-top: 13px; font-weight: bold;">
-            &nbsp;Gender
-          </label>
-          <select id="gender" name="gender" class="form-content" >
-            <option value="male" {% if newborn['gender'] == 'male' %}selected{% endif %}>Male</option>
-            <option value="female" {% if newborn['gender'] == 'female' %}selected{% endif %}>Female</option>
-          </select>
-          <div class="form-border"></div>
-          <button type="submit" id="submit-btn">Save Changes</button>
-        </form>
-        </div>
+            <div class="notificationNote">
+                <i class="fa fa-exclamation-circle"></i>
+                <p style="font-size:0.8rem; text-align: center;"><b>Edit fields to change and press Save Changes!</b>
+                  <b>Select a unique name that does not already exist in the database.
+                  </b></p>
+            </div>
+            <form id="edit-form" action="{{ url_for('edit.edit_newborn', index=index) }}" method="POST">
+                <input type="hidden" name="_method" value="PUT">
+                <label for="name" style="display: block; padding-top: 13px; font-weight: bold;">
+                    &nbsp;Name
+                </label>
+                <input type="text" name="name" id="name" value="{{ newborn['name'] }}" class="form-content">
+                <div class="form-border"></div>
+                <div class="form-group">
+                    <label for="birthdate" style="display: block; padding-top: 13px; font-weight: bold;">
+                        &nbsp;Birthdate
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" name="birthdate" id="birthdate" data-role="calendarpicker" data-cls-calendar="compact" data-auto-close="true" value="{{ newborn['birthdate'] }}" class="form-content">
+                        <div class="form-border"></div>
+                    </div>
+                </div>
+                <label for="gender" style="display: block; padding-top: 13px; font-weight: bold;">
+                    &nbsp;Gender
+                </label>
+                <select id="gender" name="gender" class="form-content">
+                    <option value="male" {% if newborn['gender'] == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if newborn['gender'] == 'female' %}selected{% endif %}>Female</option>
+                </select>
+                <div class="form-border"></div>
+                <button type="submit" id="submit-btn">Save Changes</button>
+            </form>
         </div>
     </div>
-  </body>
+</div>
+<script>
+    function showNotification(message) {
+        var notification = document.createElement('div');
+        notification.classList.add('custom-notification');
+
+        var icon = document.createElement('i');
+        icon.classList.add('fas', 'fa-exclamation-circle', 'icon');
+        notification.appendChild(icon);
+
+        var messageElement = document.createElement('span');
+        messageElement.textContent = message;
+        notification.appendChild(messageElement);
+
+        document.body.appendChild(notification);
+
+        setTimeout(function () {
+            notification.remove();
+        }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var editForm = document.getElementById('edit-form');
+        var nameInput = document.getElementById('name');
+        var existingNames = Array.from(document.querySelectorAll('tbody td:first-child')).map(function (td) {
+            return td.textContent.trim();
+        });
+
+        var notificationMessage = "{{ notification_message|default('') }}";
+
+        if (notificationMessage !== "") {
+            showNotification(notificationMessage);
+        }
+
+        editForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var newName = nameInput.value.trim();
+            var currentName = "{{ newborn['name'] }}";
+
+            // Check if the new name is the same as the current name
+            if (newName === currentName) {
+                // If the name is the same, submit the form
+                editForm.submit();
+            } else {
+                // Check if the new name already exists in the table
+                if (existingNames.includes(newName)) {
+                    showNotification('The name already exists. Please choose a different name.');
+                    return;
+                }
+
+                // Submit the form if the name is unique
+                editForm.submit();
+            }
+        });
+    });
+</script>
+</body>
 </html>

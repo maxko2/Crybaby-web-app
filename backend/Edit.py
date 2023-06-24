@@ -8,7 +8,7 @@ edit_bp = Blueprint('edit', __name__, )
 @edit_bp.route('/newborns/<int:index>/edit', methods=['GET', 'POST'])
 def edit_newborn(index):
     if 'logged_in' not in session or not session['logged_in']:
-        # If not, redirect to the login page
+        # If not logged in, redirect to the login page
         return redirect(url_for('login.login'))
 
     # Load the current user from the database
@@ -23,6 +23,16 @@ def edit_newborn(index):
         birthdate = request.form['birthdate']
         gender = request.form['gender']
 
+        # Check if the new name is already taken by another newborn
+        for i, nb in enumerate(current_user['newborns']):
+            if i != index and nb['name'] == name:
+                # Name already exists, notify the user
+                notification = {
+                    'type': 'error',
+                    'message': 'Name already exists. Please choose a different name.'
+                }
+                return render_template('edit_newborn.html', index=index, newborn=newborn, notification=notification)
+
         # Update the newborn object
         newborn['name'] = name
         newborn['birthdate'] = birthdate
@@ -35,6 +45,8 @@ def edit_newborn(index):
         return redirect(url_for('newborns.newborns'))
 
     return render_template('edit_newborn.html', index=index, newborn=newborn)
+
+
 
 delete_bp = Blueprint('delete', __name__, )
 @delete_bp.route('/newborns/<int:newborn_id>', methods=['POST', 'DELETE'])

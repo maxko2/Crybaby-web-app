@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% include 'links.html' %}
+    {% include 'links.html' %}   
 </head>
 <body class="background">
     <div class="h-100 p-4">
@@ -16,10 +16,9 @@
                     <div class="form-group">
                         <label for="name" style="display: block; padding-top: 22px; font-weight: bold;">Name:</label>
                         <div class="input-wrapper">
-                        <input type="text" id="name" name="name" class="form-content" required>
-                        <div class="form-border"></div>
-                    </div>
-                        
+                            <input type="text" id="name" name="name" class="form-content" required>
+                            <div class="form-border"></div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="birthdate" style="padding-top: 22px; font-weight: bold;">Birthdate:</label>
@@ -73,4 +72,49 @@
             </div>
         </div>
     </div>
-</body
+    <script>
+        function showNotification(message) {
+            var notification = document.createElement('div');
+            notification.classList.add('custom-notification');
+
+            var icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-exclamation-circle', 'icon');
+            notification.appendChild(icon);
+
+            var messageElement = document.createElement('span');
+            messageElement.textContent = message;
+            notification.appendChild(messageElement);
+
+            document.body.appendChild(notification);
+
+            setTimeout(function() {
+                notification.remove();
+            }, 3000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form');
+            var nameInput = document.getElementById('name');
+            
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                var name = nameInput.value;
+                
+                // Check if the name already exists
+                var existingNames = Array.from(document.querySelectorAll('tbody td:first-child')).map(function(td) {
+                    return td.textContent.trim();
+                });
+                
+                if (existingNames.includes(name)) {
+                    showNotification('The name already exists. Please choose a different name.');
+                    return;
+                }
+                
+                // Submit the form if the name is unique
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>

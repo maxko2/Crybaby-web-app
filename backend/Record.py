@@ -65,6 +65,6 @@ def record():
             {"username": session['username'], "newborns.name": selected_newborn_name},
             {"$push": {"newborns.$.recordings": {"name": filename, "date": dt_string, "file": file.read(), "label": result}}})
         file.close()
-        os.remove("output.wav")
-        os.remove("input.bin")
+        #os.remove("output.wav")
+        #os.remove("input.bin")
         return result  # Return the prediction result as the response
