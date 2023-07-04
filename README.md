@@ -72,7 +72,7 @@ Clone repo:
         
 Install requirements.txt:
 
-    pip install requirements.txt
+    pip -r install requirements.txt
    
 
 ## Run app locally in development server
